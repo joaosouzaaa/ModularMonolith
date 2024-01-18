@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
@@ -15,7 +16,10 @@
     <Folder Include="Controllers\Modules\Appointment\" />
     <Folder Include="Controllers\Modules\Doctor\" />
     <Folder Include="Controllers\Modules\Patient\" />
-    <Folder Include="DependencyInjection\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ModularMonolith.Database\ModularMonolith.Database.csproj" />
   </ItemGroup>
 
 </Project>
