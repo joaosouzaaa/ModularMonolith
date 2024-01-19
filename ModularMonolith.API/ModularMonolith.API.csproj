@@ -1,25 +1,30 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <InvariantGlobalization>true</InvariantGlobalization>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<InvariantGlobalization>true</InvariantGlobalization>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.1">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\Modules\Appointment\" />
-    <Folder Include="Controllers\Modules\Doctor\" />
-    <Folder Include="Controllers\Modules\Patient\" />
-  </ItemGroup>
+	<ItemGroup>
+		<Folder Include="Controllers\Modules\Appointment\" />
+		<Folder Include="Controllers\Modules\Doctor\" />
+		<Folder Include="Controllers\Modules\Patient\" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\ModularMonolith.Database\ModularMonolith.Database.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Doctor.DependencyInjection\Doctor.DependencyInjection.csproj" />
+		<ProjectReference Include="..\Patient.DependencyInjection\Patient.DependencyInjection.csproj" />
+	</ItemGroup>
 
 </Project>
