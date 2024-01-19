@@ -5,5 +5,5 @@ public sealed class Schedule
     public required DateTime Time { get; set; }
 
     public int DoctorId { get; set; }
-    public Doctor Doctor { get; set; }
+    public DoctorAttendant Doctor { get; set; }
 }
