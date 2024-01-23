@@ -1,8 +1,10 @@
-﻿using Doctor.Domain.Entities;
+﻿using Doctor.Domain.Arguments;
+using Doctor.Domain.Entities;
 using Doctor.Infrasctructure.DatabaseContexts;
 using Doctor.Infrasctructure.Interfaces.Repositories;
 using Doctor.Infrasctructure.Repositories.BaseRepositories;
 using Microsoft.EntityFrameworkCore;
+using ModularMonolith.Common.Settings.PaginationSettings;
 
 namespace Doctor.Infrasctructure.Repositories;
 public sealed class DoctorAttendantRepository(DoctorDbContext dbContext) : BaseRepository<DoctorAttendant>(dbContext), IDoctorAttendantRepository
@@ -21,4 +23,20 @@ public sealed class DoctorAttendantRepository(DoctorDbContext dbContext) : BaseR
 
         return SaveChangesAsync();
     }
+
+    //public async Task<PageList<DoctorAttendant>> GetAllFilteredAndPaginatedAsync(DoctorGetAllFilterArgument filter)
+    //{
+    //    var query = DbContextSet.Include(d => d.Specialities)
+    //                            .Include(d => d.Schedules)
+    //                            .Where(d => d.Specialities.Any(s => filter.SpecialityIds.Contains(s.Id)))
+    //                            .Where(d => filter.InitialTime == null
+    //                            || d.Schedules.)
+    //}
+
+    public Task<DoctorAttendant?> GetByIdAsync(int id) =>
+        DbContextSet.AsNoTracking()
+                    .Include(d => d.Certification)
+                    .Include(d => d.Specialities)
+                    .Include(d => d.Schedules)
+                    .FirstOrDefaultAsync(d => d.Id == id);
 }
