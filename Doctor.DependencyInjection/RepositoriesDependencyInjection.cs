@@ -8,5 +8,6 @@ internal static class RepositoriesDependencyInjection
     internal static void AddRepositoriesDependencyInjection(this IServiceCollection services)
     {
         services.AddScoped<IDoctorAttendantRepository, DoctorAttendantRepository>();
+        services.AddScoped<ISpecialityRepository, SpecialityRepository>();
     }
 }
