@@ -1,5 +1,5 @@
-﻿using Doctor.Domain.Entities;
-using Doctor.Infrasctructure.Constants;
+﻿using Doctor.Domain.Constants;
+using Doctor.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

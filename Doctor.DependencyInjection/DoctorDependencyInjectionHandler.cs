@@ -16,6 +16,7 @@ public static class DoctorDependencyInjectionHandler
         });
 
         services.AddRepositoriesDependencyInjection();
+        services.AddMappersDependencyInjection();
         services.AddServicesDependencyInjection();
     }
 }

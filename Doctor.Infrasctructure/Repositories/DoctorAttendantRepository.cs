@@ -24,7 +24,7 @@ public sealed class DoctorAttendantRepository(DoctorDbContext dbContext) : BaseR
         return SaveChangesAsync();
     }
 
-    public async Task<PageList<DoctorAttendant>> GetAllFilteredAndPaginatedAsync(DoctorGetAllFilterArgument filter)
+    public Task<PageList<DoctorAttendant>> GetAllFilteredAndPaginatedAsync(DoctorGetAllFilterArgument filter)
     {
         var query = DbContextSet.Include(d => d.Specialities)
                                 .Include(d => d.Schedules)
@@ -34,7 +34,7 @@ public sealed class DoctorAttendantRepository(DoctorDbContext dbContext) : BaseR
                                 .Where(d => filter.FinalTime == null
                                 || d.Schedules.Any(s => s.Time <= filter.FinalTime));
 
-        return await PaginationHandler.PaginateAsync<DoctorAttendant>(query, filter);
+        return query.PaginateAsync(filter);
     }
 
     public Task<DoctorAttendant?> GetByIdAsync(int id) =>

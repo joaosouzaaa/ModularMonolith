@@ -1,5 +1,5 @@
-﻿using Doctor.Domain.Entities;
-using Doctor.Infrasctructure.Constants;
+﻿using Doctor.Domain.Constants;
+using Doctor.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -12,7 +12,7 @@ public sealed class CertificationMapping : IEntityTypeConfiguration<Certificatio
         
         builder.HasKey(c => c.Id);
 
-        builder.Property(c => c.LicenseNunber)
+        builder.Property(c => c.LicenseNumber)
             .IsRequired(true)
             .HasColumnName("license_number")
             .HasColumnType("varchar(20)");

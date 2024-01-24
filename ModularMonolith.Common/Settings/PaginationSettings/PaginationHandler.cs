@@ -3,7 +3,7 @@
 namespace ModularMonolith.Common.Settings.PaginationSettings;
 public static class PaginationHandler
 {
-    public static async Task<PageList<TEntity>> PaginateAsync<TEntity>(IQueryable<TEntity> query, PageParameters pageParameters)
+    public static async Task<PageList<TEntity>> PaginateAsync<TEntity>(this IQueryable<TEntity> query, PageParameters pageParameters)
         where TEntity : class
     {
         var count = await query.CountAsync();
