@@ -1,4 +1,5 @@
 ﻿using Doctor.Infrasctructure.DatabaseContexts;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,5 +20,10 @@ public static class DoctorDependencyInjectionHandler
         services.AddMappersDependencyInjection();
         services.AddValidatorsDependencyInjection();
         services.AddServicesDependencyInjection();
+    }
+
+    public static void UseDoctorDependencyInjection(this IApplicationBuilder app)
+    {
+        app.MigrateDatabase();
     }
 }

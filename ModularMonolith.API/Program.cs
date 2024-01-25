@@ -1,3 +1,4 @@
+using ModularMonolith.API.Constants.CorsConstants;
 using ModularMonolith.API.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,7 +18,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors(CorsPoliciesNamesConstants.CorsPolicy);
 app.UseAuthorization();
 app.MapControllers();
+app.UseDependencyInjection();
 
 app.Run();
