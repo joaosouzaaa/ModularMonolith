@@ -7,7 +7,7 @@ public static class DependencyInjectionHandler
 {
     public static void AddDependencyInjection(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDoctorDependencyInjectionHandler(configuration);
+        services.AddDoctorDependencyInjection(configuration);
         services.AddPatientDependencyInjection(configuration);
     }
 }

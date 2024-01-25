@@ -5,7 +5,7 @@ namespace UnitTests.TestBuilders.Doctor;
 public sealed class CertificationBuilder
 {
     private readonly int _id = 123;
-    private string _licenseNumber;
+    private string _licenseNumber = new string('a', count: 20);
 
     public static CertificationBuilder NewObject() =>
         new();
@@ -26,4 +26,11 @@ public sealed class CertificationBuilder
             Id = _id,
             LicenseNumber = _licenseNumber
         };
+
+    public CertificationBuilder WithLicenseNumber(string licenseNumber)
+    {
+        _licenseNumber = licenseNumber;
+
+        return this;
+    }
 }

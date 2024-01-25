@@ -5,9 +5,9 @@ namespace UnitTests.TestBuilders.Doctor;
 public sealed class DoctorAttendantBuilder
 {
     private readonly int _id = 123;
-    private readonly DateOnly _birthDate = new DateOnly(1999, 01, 01);
-    private readonly int _experienceYears = 1;
-    private readonly string _name = "test";
+    private DateOnly _birthDate = new(DateTime.Now.AddYears(-20).Year, 01, 01);
+    private int _experienceYears = 1;
+    private string _name = "test";
     private List<Schedule> _scheduleList = [];
     private List<Speciality> _specialityList = [];
 
@@ -53,6 +53,27 @@ public sealed class DoctorAttendantBuilder
             Schedules = [],
             Specialities = []
         };
+
+    public DoctorAttendantBuilder WithBirthDate(DateOnly birthDate)
+    {
+        _birthDate = birthDate;
+
+        return this;
+    }
+
+    public DoctorAttendantBuilder WithExperienceYears(int experienceYears)
+    {
+        _experienceYears = experienceYears;
+
+        return this;
+    }
+
+    public DoctorAttendantBuilder WithName(string name)
+    {
+        _name = name;
+
+        return this;
+    }
 
     public DoctorAttendantBuilder WithScheduleList(List<Schedule> scheduleList)
     {

@@ -26,4 +26,11 @@ public sealed class SpecialityBuilder
             Id = _id,
             Name = _name
         };
+
+    public SpecialityBuilder WithName(string name)
+    {
+        _name = name;
+
+        return this;
+    }
 }

@@ -8,18 +8,23 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Controllers\Modules\Appointment\**" />
+	  <Compile Remove="Controllers\Modules\Patient\**" />
+	  <Content Remove="Controllers\Modules\Appointment\**" />
+	  <Content Remove="Controllers\Modules\Patient\**" />
+	  <EmbeddedResource Remove="Controllers\Modules\Appointment\**" />
+	  <EmbeddedResource Remove="Controllers\Modules\Patient\**" />
+	  <None Remove="Controllers\Modules\Appointment\**" />
+	  <None Remove="Controllers\Modules\Patient\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.1">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Folder Include="Controllers\Modules\Appointment\" />
-		<Folder Include="Controllers\Modules\Doctor\" />
-		<Folder Include="Controllers\Modules\Patient\" />
 	</ItemGroup>
 
 	<ItemGroup>
