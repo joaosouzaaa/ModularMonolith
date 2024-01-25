@@ -24,6 +24,20 @@ public sealed class DoctorAttendantValidatorTests
         Assert.True(validationResult.IsValid);
     }
 
+    [Fact]
+    public async Task ValidateAsync_InvalidCertification_ReturnsFalse()
+    {
+        // A
+        var invalidCertification = CertificationBuilder.NewObject().WithLicenseNumber("a").DomainBuild();
+        var doctorAttendantWithInvalidCertification = DoctorAttendantBuilder.NewObject().WithCertification(invalidCertification).DomainBuild();
+
+        // A
+        var validationResult = await _doctorAttendantValidator.ValidateAsync(doctorAttendantWithInvalidCertification);
+
+        // A
+        Assert.False(validationResult.IsValid);
+    }
+
     [Theory]
     [MemberData(nameof(InvalidNameParameters))]
     public async Task ValidateAsync_InvalidName_ReturnsFalse(string name)

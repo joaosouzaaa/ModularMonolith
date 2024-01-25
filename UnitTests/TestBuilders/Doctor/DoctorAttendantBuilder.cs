@@ -6,6 +6,7 @@ public sealed class DoctorAttendantBuilder
 {
     private readonly int _id = 123;
     private DateOnly _birthDate = new(DateTime.Now.AddYears(-20).Year, 01, 01);
+    private Certification _certification = CertificationBuilder.NewObject().DomainBuild();
     private int _experienceYears = 1;
     private string _name = "test";
     private List<Schedule> _scheduleList = [];
@@ -18,7 +19,7 @@ public sealed class DoctorAttendantBuilder
         new()
         {
             BirthDate = _birthDate,
-            Certification = CertificationBuilder.NewObject().DomainBuild(),
+            Certification = _certification,
             CertificationId = 123,
             ExperienceYears = _experienceYears,
             Id = _id,
@@ -57,6 +58,13 @@ public sealed class DoctorAttendantBuilder
     public DoctorAttendantBuilder WithBirthDate(DateOnly birthDate)
     {
         _birthDate = birthDate;
+
+        return this;
+    }
+
+    public DoctorAttendantBuilder WithCertification(Certification certification)
+    {
+        _certification = certification;
 
         return this;
     }

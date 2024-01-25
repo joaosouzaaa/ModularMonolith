@@ -8,6 +8,8 @@ public sealed class DoctorAttendantValidator : AbstractValidator<DoctorAttendant
 {
     public DoctorAttendantValidator()
     {
+        RuleFor(d => d.Certification).SetValidator(new CertificationValidator());
+
         RuleFor(d => d.Name).NotEmpty().Length(1, 100)
             .WithMessage(EMessage.InvalidLength.Description().FormatTo("Name", "1 to 100"));
 

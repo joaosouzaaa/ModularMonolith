@@ -7,5 +7,8 @@ public enum EMessage : ushort
     InvalidLength,
 
     [Description("{0} needs to be filled.")]
-    Required
+    Required,
+
+    [Description("{0} was not found.")]
+    NotFound
 }
