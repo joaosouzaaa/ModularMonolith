@@ -9,5 +9,7 @@ public static class MappersDependencyInjection
     {
         services.AddScoped<ICertificationMapper, CertificationMapper>();
         services.AddScoped<IDoctorAttendantMapper, DoctorAttendantMapper>();
+        services.AddScoped<IScheduleMapper, ScheduleMapper>();
+        services.AddScoped<ISpecialityMapper, SpecialityMapper>();
     }
 }
