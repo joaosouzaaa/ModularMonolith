@@ -155,7 +155,7 @@ public sealed class SpecialityServiceTests
     }
 
     [Fact]
-    public async Task GetByIdAsync_SuccessfulScenario_ReturnsExpectedEntity()
+    public async Task GetByIdReturnsDomainObjectAsync_SuccessfulScenario_ReturnsExpectedEntity()
     {
         // A
         var id = 123;
