@@ -1,4 +1,5 @@
 ﻿using Doctor.Infrasctructure.DatabaseContexts;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -6,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Doctor.DependencyInjection;
 public static class DoctorDependencyInjectionHandler
 {
-    public static void AddDoctorDependencyInjectionHandler(this IServiceCollection services, IConfiguration configuration)
+    public static void AddDoctorDependencyInjection(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<DoctorDbContext>(options =>
         {
@@ -16,6 +17,13 @@ public static class DoctorDependencyInjectionHandler
         });
 
         services.AddRepositoriesDependencyInjection();
+        services.AddMappersDependencyInjection();
+        services.AddValidatorsDependencyInjection();
         services.AddServicesDependencyInjection();
+    }
+
+    public static void UseDoctorDependencyInjection(this IApplicationBuilder app)
+    {
+        app.MigrateDatabase();
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Doctor.Domain.Entities;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Doctor.Infrasctructure.Constants;
+using Doctor.Domain.Constants;
 
 namespace Doctor.Infrasctructure.EntitiesMapping;
 public sealed class DoctorAttendantMapping : IEntityTypeConfiguration<DoctorAttendant>

@@ -28,4 +28,7 @@ public sealed class SpecialityRepository(DoctorDbContext dbContext) : BaseReposi
 
     public Task<List<Speciality>> GetAllAsync() =>
         DbContextSet.AsNoTracking().ToListAsync();
+
+    public Task<Speciality?> GetByIdAsync(int id) =>
+        DbContextSet.FirstOrDefaultAsync(s => s.Id == id);
 }
