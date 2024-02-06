@@ -19,5 +19,6 @@ public static class DependencyInjectionHandler
     public static void UseDependencyInjection(this IApplicationBuilder app)
     {
         app.UseDoctorDependencyInjection();
+        app.UsePatientDependencyInjection();
     }
 }
