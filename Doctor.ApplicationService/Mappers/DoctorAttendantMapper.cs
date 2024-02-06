@@ -11,8 +11,8 @@ public sealed class DoctorAttendantMapper(ICertificationMapper certificationMapp
     public DoctorAttendant SaveToDomain(DoctorAttendantSave doctorAttendantSave) =>
         new()
         {
-            BirthDate = doctorAttendantSave.BirthDate,
-            Certification = certificationMapper.RequestToDomain(doctorAttendantSave.Certification),
+            BirthDate = DateOnly.FromDateTime(doctorAttendantSave.BirthDate),
+            Certification = certificationMapper.RequestToDomainCreate(doctorAttendantSave.Certification),
             ExperienceYears = doctorAttendantSave.ExperienceYears,
             Name = doctorAttendantSave.Name,
             Schedules = [],
@@ -21,10 +21,11 @@ public sealed class DoctorAttendantMapper(ICertificationMapper certificationMapp
 
     public void UpdateToDomain(DoctorAttendantUpdate doctorAttendantUpdate, DoctorAttendant doctorAttendant)
     {
-        doctorAttendant.BirthDate = doctorAttendantUpdate.BirthDate;
-        doctorAttendant.Certification = certificationMapper.RequestToDomain(doctorAttendantUpdate.Certification);
+        doctorAttendant.BirthDate = DateOnly.FromDateTime(doctorAttendantUpdate.BirthDate);
         doctorAttendant.ExperienceYears = doctorAttendantUpdate.ExperienceYears;
         doctorAttendant.Name = doctorAttendantUpdate.Name;
+        
+        certificationMapper.RequestToDomainUpdate(doctorAttendantUpdate.Certification, doctorAttendant.Certification);
     }
 
     public DoctorAttendantResponse DomainToResponse(DoctorAttendant doctorAttendant) =>

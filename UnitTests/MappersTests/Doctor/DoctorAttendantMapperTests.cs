@@ -31,14 +31,14 @@ public sealed class DoctorAttendantMapperTests
         var doctorAttendantSave = DoctorAttendantBuilder.NewObject().SaveBuild();
 
         var certification = CertificationBuilder.NewObject().DomainBuild();
-        _certificationMapperMock.Setup(c => c.RequestToDomain(It.IsAny<CertificationRequest>()))
+        _certificationMapperMock.Setup(c => c.RequestToDomainCreate(It.IsAny<CertificationRequest>()))
             .Returns(certification);
 
         // A
         var doctorAttendantResult = _doctorAttendantMapper.SaveToDomain(doctorAttendantSave);
 
         // A
-        Assert.Equal(doctorAttendantResult.BirthDate, doctorAttendantSave.BirthDate);
+        Assert.Equal(doctorAttendantResult.BirthDate, DateOnly.FromDateTime(doctorAttendantSave.BirthDate));
         Assert.NotNull(doctorAttendantResult.Certification);
         Assert.Equal(doctorAttendantResult.ExperienceYears, doctorAttendantSave.ExperienceYears);
         Assert.Equal(doctorAttendantResult.Name, doctorAttendantSave.Name);
@@ -51,18 +51,16 @@ public sealed class DoctorAttendantMapperTests
         var doctorAttendantUpdate = DoctorAttendantBuilder.NewObject().UpdateBuild();
         var doctorAttendantResult = DoctorAttendantBuilder.NewObject().DomainBuild();
 
-        var certification = CertificationBuilder.NewObject().DomainBuild();
-        _certificationMapperMock.Setup(c => c.RequestToDomain(It.IsAny<CertificationRequest>()))
-            .Returns(certification);
+        _certificationMapperMock.Setup(c => c.RequestToDomainUpdate(It.IsAny<CertificationRequest>(), It.IsAny<Certification>()));
 
         // A
         _doctorAttendantMapper.UpdateToDomain(doctorAttendantUpdate, doctorAttendantResult);
 
         // A
-        Assert.Equal(doctorAttendantResult.BirthDate, doctorAttendantUpdate.BirthDate);
-        Assert.NotNull(doctorAttendantResult.Certification);
+        Assert.Equal(doctorAttendantResult.BirthDate, DateOnly.FromDateTime(doctorAttendantUpdate.BirthDate));
         Assert.Equal(doctorAttendantResult.ExperienceYears, doctorAttendantUpdate.ExperienceYears);
         Assert.Equal(doctorAttendantResult.Name, doctorAttendantUpdate.Name);
+        Assert.NotNull(doctorAttendantResult.Certification);
     }
 
     [Fact]

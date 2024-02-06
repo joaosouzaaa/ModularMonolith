@@ -15,18 +15,24 @@ public sealed class DoctorAttendantService : BaseService<DoctorAttendant>, IDoct
 {
     private readonly IDoctorAttendantRepository _doctorAttendantRepository;
     private readonly IDoctorAttendantMapper _doctorAttendantMapper;
+    private readonly ISpecialityServiceFacade _specialityServiceFacade;
 
     public DoctorAttendantService(IDoctorAttendantRepository doctorAttendantRepository, IDoctorAttendantMapper doctorAttendantMapper,
-                                  INotificationHandler notificationHandler, IValidator<DoctorAttendant> validator) 
+                                  ISpecialityServiceFacade specialityServiceFacade, INotificationHandler notificationHandler, 
+                                  IValidator<DoctorAttendant> validator) 
                                   : base(notificationHandler, validator)
     {
         _doctorAttendantRepository = doctorAttendantRepository;
         _doctorAttendantMapper = doctorAttendantMapper;
+        _specialityServiceFacade = specialityServiceFacade;
     }
 
     public async Task<bool> AddAsync(DoctorAttendantSave doctorAttendantSave)
     {
         var doctorAttendant = _doctorAttendantMapper.SaveToDomain(doctorAttendantSave);
+
+        if (!await AddSpecialityRelationshipAsync(doctorAttendantSave.SpecialityIds, doctorAttendant.Specialities))
+            return false;
 
         if (!await ValidateAsync(doctorAttendant))
             return false;
@@ -44,6 +50,10 @@ public sealed class DoctorAttendantService : BaseService<DoctorAttendant>, IDoct
 
             return false;
         }
+
+        doctorAttendant.Specialities.Clear();
+        if (!await AddSpecialityRelationshipAsync(doctorAttendantUpdate.SpecialityIds, doctorAttendant.Specialities))
+            return false;
 
         _doctorAttendantMapper.UpdateToDomain(doctorAttendantUpdate, doctorAttendant);
 
@@ -70,5 +80,24 @@ public sealed class DoctorAttendantService : BaseService<DoctorAttendant>, IDoct
             return null;
 
         return _doctorAttendantMapper.DomainToResponse(doctorAttendant);
+    }
+
+    private async Task<bool> AddSpecialityRelationshipAsync(List<int> specialityIdList, List<Speciality> specialityList)
+    {
+        foreach (var specialityId in specialityIdList)
+        {
+            var speciality = await _specialityServiceFacade.GetByIdReturnsDomainObjectAsync(specialityId);
+
+            if (speciality is null)
+            {
+                _notificationHandler.AddNotification(nameof(EMessage.NotFound), EMessage.NotFound.Description().FormatTo("Speciality"));
+
+                return false;
+            }
+
+            specialityList.Add(speciality);
+        }
+
+        return true;
     }
 }

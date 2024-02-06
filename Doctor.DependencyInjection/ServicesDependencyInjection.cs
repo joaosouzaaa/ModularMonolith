@@ -7,6 +7,9 @@ public static class ServicesDependencyInjection
 {
     public static void AddServicesDependencyInjection(this IServiceCollection services)
     {
+        services.AddScoped<IDoctorAttendantService, DoctorAttendantService>();
+
         services.AddScoped<ISpecialityService, SpecialityService>();
+        services.AddScoped<ISpecialityServiceFacade, SpecialityService>();
     }
 }

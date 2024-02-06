@@ -31,7 +31,8 @@ public sealed class DoctorAttendantRepository : BaseRepository<DoctorAttendant>,
 
     public Task<PageList<DoctorAttendant>> GetAllFilteredAndPaginatedAsync(DoctorGetAllFilterArgument filter)
     {
-        var query = DbContextSet.Include(d => d.Specialities)
+        var query = DbContextSet.Include(d => d.Certification)
+                                .Include(d => d.Specialities)
                                 .Include(d => d.Schedules)
                                 .Where(d => d.Specialities.Any(s => filter.SpecialityIds.Contains(s.Id)))
                                 .Where(d => filter.InitialTime == null
@@ -50,8 +51,8 @@ public sealed class DoctorAttendantRepository : BaseRepository<DoctorAttendant>,
             query = DbContextSet.AsNoTracking();
 
         return DbContextSet.Include(d => d.Certification)
-                    .Include(d => d.Specialities)
-                    .Include(d => d.Schedules)
-                    .FirstOrDefaultAsync(d => d.Id == id);
+                           .Include(d => d.Specialities)
+                           .Include(d => d.Schedules)
+                           .FirstOrDefaultAsync(d => d.Id == id);
     }
 }
