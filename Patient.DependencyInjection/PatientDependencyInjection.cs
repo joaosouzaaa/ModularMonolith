@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Patient.Infrastructure.DatabaseContexts;
@@ -14,5 +15,15 @@ public static class PatientDependencyInjection
             options.EnableSensitiveDataLogging();
             options.EnableDetailedErrors();
         });
+
+        services.AddRepositoriesDependencyInjection();
+        services.AddValidatorsDependencyInjection();
+        services.AddMappersDependencyInjection();
+        services.AddServicesDependencyInjection();
+    }
+
+    public static void UsePatientDependencyInjection(this IApplicationBuilder app)
+    {
+        app.MigrateDatabase();
     }
 }
