@@ -15,6 +15,6 @@ public sealed class ScheduleMapping : IEntityTypeConfiguration<Schedule>
         builder.Property(s => s.Time)
             .IsRequired(true)
             .HasColumnName("time")
-            .HasColumnType("timestamp with time zone");
+            .HasColumnType("timestamp without time zone");
     }
 }

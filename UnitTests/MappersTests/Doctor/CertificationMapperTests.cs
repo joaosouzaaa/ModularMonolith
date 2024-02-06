@@ -12,13 +12,27 @@ public sealed class CertificationMapperTests
     }
 
     [Fact]
-    public void RequestToDomain_SuccessfulScenario()
+    public void RequestToDomainCreate_SuccessfulScenario()
     {
         // A
         var certificationRequest = CertificationBuilder.NewObject().RequestBuild();
 
         // A
-        var certificationResult = _certificationMapper.RequestToDomain(certificationRequest);
+        var certificationResult = _certificationMapper.RequestToDomainCreate(certificationRequest);
+
+        // A
+        Assert.Equal(certificationResult.LicenseNumber, certificationRequest.LicenseNumber);
+    }
+
+    [Fact]
+    public void RequestToDomainUpdate_SuccessfulScenario()
+    {
+        // A
+        var certificationRequest = CertificationBuilder.NewObject().RequestBuild();
+        var certificationResult = CertificationBuilder.NewObject().DomainBuild();
+
+        // A
+        _certificationMapper.RequestToDomainUpdate(certificationRequest, certificationResult);
 
         // A
         Assert.Equal(certificationResult.LicenseNumber, certificationRequest.LicenseNumber);

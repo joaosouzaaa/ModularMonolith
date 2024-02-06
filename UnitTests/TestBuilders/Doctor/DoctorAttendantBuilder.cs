@@ -17,6 +17,7 @@ public sealed class DoctorAttendantBuilder
     private readonly int _pageNumber = 123;
     private readonly int _pageSize = 123;
     private List<int> _specialityIdList = [];
+    private DateTime _birthDateRequest = DateTime.Now;
 
     public static DoctorAttendantBuilder NewObject() =>
         new();
@@ -47,17 +48,17 @@ public sealed class DoctorAttendantBuilder
     public DoctorAttendantSave SaveBuild() =>
         new(_name,
             _experienceYears,
-            _birthDate,
+            _birthDateRequest,
             CertificationBuilder.NewObject().RequestBuild(),
-            []);
+            _specialityIdList);
 
     public DoctorAttendantUpdate UpdateBuild() =>
         new(_id,
             _name,
             _experienceYears,
-            _birthDate,
+            _birthDateRequest,
             CertificationBuilder.NewObject().RequestBuild(),
-            []);
+            _specialityIdList);
 
     public DoctorGetAllFilterRequest GetAllFilterRequestBuild() =>
         new()

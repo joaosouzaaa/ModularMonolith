@@ -10,7 +10,7 @@ using FluentValidation;
 using ModularMonolith.Common.Interfaces;
 
 namespace Doctor.ApplicationService.Services;
-public sealed class SpecialityService : BaseService<Speciality>, ISpecialityService
+public sealed class SpecialityService : BaseService<Speciality>, ISpecialityService, ISpecialityServiceFacade
 {
     private readonly ISpecialityRepository _specialityRepository;
     private readonly ISpecialityMapper _specialityMapper;

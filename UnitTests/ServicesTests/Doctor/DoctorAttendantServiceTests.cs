@@ -17,6 +17,7 @@ public sealed class DoctorAttendantServiceTests
 {
     private readonly Mock<IDoctorAttendantRepository> _doctorAttendantRepositoryMock;
     private readonly Mock<IDoctorAttendantMapper> _doctorAttendantMapperMock;
+    private readonly Mock<ISpecialityServiceFacade > _specialityServiceFacadeMock;
     private readonly Mock<INotificationHandler> _notificationHandlerMock;
     private readonly Mock<IValidator<DoctorAttendant>> _validatorMock;
     private readonly DoctorAttendantService _doctorAttendantService;
@@ -25,21 +26,32 @@ public sealed class DoctorAttendantServiceTests
     {
         _doctorAttendantRepositoryMock = new Mock<IDoctorAttendantRepository>();
         _doctorAttendantMapperMock = new Mock<IDoctorAttendantMapper>();
+        _specialityServiceFacadeMock = new Mock<ISpecialityServiceFacade>();
         _notificationHandlerMock = new Mock<INotificationHandler>();
         _validatorMock = new Mock<IValidator<DoctorAttendant>>();
-        _doctorAttendantService = new DoctorAttendantService(_doctorAttendantRepositoryMock.Object, _doctorAttendantMapperMock.Object, _notificationHandlerMock.Object,
-            _validatorMock.Object);
+        _doctorAttendantService = new DoctorAttendantService(_doctorAttendantRepositoryMock.Object, _doctorAttendantMapperMock.Object, _specialityServiceFacadeMock.Object,
+            _notificationHandlerMock.Object, _validatorMock.Object);
     }
 
     [Fact]
     public async Task AddAsync_SuccessfulScenario_ReturnsTrue()
     {
         // A
-        var doctorAttendantSave = DoctorAttendantBuilder.NewObject().SaveBuild();
+        var specialityIdList = new List<int>()
+        {
+            1,
+            3
+        };
+        var doctorAttendantSave = DoctorAttendantBuilder.NewObject().WithSpecialityIdList(specialityIdList).SaveBuild();
 
         var doctorAttendant = DoctorAttendantBuilder.NewObject().DomainBuild();
         _doctorAttendantMapperMock.Setup(d => d.SaveToDomain(It.IsAny<DoctorAttendantSave>()))
             .Returns(doctorAttendant);
+
+        var speciality = SpecialityBuilder.NewObject().DomainBuild();
+        _specialityServiceFacadeMock.SetupSequence(s => s.GetByIdReturnsDomainObjectAsync(It.IsAny<int>()))
+            .ReturnsAsync(speciality)
+            .ReturnsAsync(speciality);
 
         var validationResult = new ValidationResult();
         _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<DoctorAttendant>(), It.IsAny<CancellationToken>()))
@@ -56,6 +68,39 @@ public sealed class DoctorAttendantServiceTests
         _doctorAttendantRepositoryMock.Verify(d => d.AddAsync(It.IsAny<DoctorAttendant>()), Times.Once());
 
         Assert.True(addResult);
+    }
+
+    [Fact]
+    public async Task AddAsync_SpecialityDoesNotExist_ReturnsFalse()
+    {
+        // A
+        var specialityIdList = new List<int>()
+        {
+            1,
+            3,
+            5
+        };
+        var doctorAttendantSave = DoctorAttendantBuilder.NewObject().WithSpecialityIdList(specialityIdList).SaveBuild();
+
+        var doctorAttendant = DoctorAttendantBuilder.NewObject().DomainBuild();
+        _doctorAttendantMapperMock.Setup(d => d.SaveToDomain(It.IsAny<DoctorAttendantSave>()))
+            .Returns(doctorAttendant);
+
+        var speciality = SpecialityBuilder.NewObject().DomainBuild();
+        _specialityServiceFacadeMock.SetupSequence(s => s.GetByIdReturnsDomainObjectAsync(It.IsAny<int>()))
+            .ReturnsAsync(speciality)
+            .Returns(Task.FromResult<Speciality?>(null));
+
+        // A
+        var addResult = await _doctorAttendantService.AddAsync(doctorAttendantSave);
+
+        // A
+        _notificationHandlerMock.Verify(n => n.AddNotification(It.IsAny<string>(), It.IsAny<string>()), Times.Once());
+        _specialityServiceFacadeMock.Verify(s => s.GetByIdReturnsDomainObjectAsync(It.IsAny<int>()), Times.Exactly(2));
+        _validatorMock.Verify(v => v.ValidateAsync(It.IsAny<DoctorAttendant>(), It.IsAny<CancellationToken>()), Times.Never());
+        _doctorAttendantRepositoryMock.Verify(d => d.AddAsync(It.IsAny<DoctorAttendant>()), Times.Never());
+
+        Assert.False(addResult);
     }
 
     [Fact]
@@ -86,6 +131,7 @@ public sealed class DoctorAttendantServiceTests
 
         // A
         _notificationHandlerMock.Verify(n => n.AddNotification(It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(validationResult.Errors.Count));
+        _specialityServiceFacadeMock.Verify(s => s.GetByIdReturnsDomainObjectAsync(It.IsAny<int>()), Times.Never());
         _doctorAttendantRepositoryMock.Verify(d => d.AddAsync(It.IsAny<DoctorAttendant>()), Times.Never());
 
         Assert.False(addResult);
@@ -95,11 +141,25 @@ public sealed class DoctorAttendantServiceTests
     public async Task UpdateAsync_SuccessfulScenario_ReturnsTrue()
     {
         // A
-        var doctorAttendantUpdate = DoctorAttendantBuilder.NewObject().UpdateBuild();
+        var specialityIdList = new List<int>()
+        {
+            1,
+            3,
+            7,
+            8
+        };
+        var doctorAttendantUpdate = DoctorAttendantBuilder.NewObject().WithSpecialityIdList(specialityIdList).UpdateBuild();
 
         var doctorAttendant = DoctorAttendantBuilder.NewObject().DomainBuild();
         _doctorAttendantRepositoryMock.Setup(d => d.GetByIdAsync(It.IsAny<int>(), It.Is<bool>(b => b == false)))
             .ReturnsAsync(doctorAttendant);
+
+        var speciality = SpecialityBuilder.NewObject().DomainBuild();
+        _specialityServiceFacadeMock.SetupSequence(s => s.GetByIdReturnsDomainObjectAsync(It.IsAny<int>()))
+            .ReturnsAsync(speciality)
+            .ReturnsAsync(speciality)
+            .ReturnsAsync(speciality)
+            .ReturnsAsync(speciality);
 
         _doctorAttendantMapperMock.Setup(d => d.UpdateToDomain(It.IsAny<DoctorAttendantUpdate>(), It.IsAny<DoctorAttendant>()));
 
@@ -134,6 +194,41 @@ public sealed class DoctorAttendantServiceTests
 
         // A
         _notificationHandlerMock.Verify(n => n.AddNotification(It.IsAny<string>(), It.IsAny<string>()), Times.Once());
+        _specialityServiceFacadeMock.Verify(s => s.GetByIdReturnsDomainObjectAsync(It.IsAny<int>()), Times.Never());
+        _doctorAttendantMapperMock.Verify(d => d.UpdateToDomain(It.IsAny<DoctorAttendantUpdate>(), It.IsAny<DoctorAttendant>()), Times.Never());
+        _validatorMock.Verify(v => v.ValidateAsync(It.IsAny<DoctorAttendant>(), It.IsAny<CancellationToken>()), Times.Never());
+        _doctorAttendantRepositoryMock.Verify(d => d.UpdateAsync(It.IsAny<DoctorAttendant>()), Times.Never());
+
+        Assert.False(updateResult);
+    }
+
+    [Fact]
+    public async Task UpdateAsync_SpecialityDoesNotExist_ReturnsFalse()
+    {
+        // A
+        var specialityIdList = new List<int>()
+        {
+            1,
+            3,
+            7,
+            8
+        };
+        var doctorAttendantUpdate = DoctorAttendantBuilder.NewObject().WithSpecialityIdList(specialityIdList).UpdateBuild();
+
+        var doctorAttendant = DoctorAttendantBuilder.NewObject().DomainBuild();
+        _doctorAttendantRepositoryMock.Setup(d => d.GetByIdAsync(It.IsAny<int>(), It.Is<bool>(b => b == false)))
+            .ReturnsAsync(doctorAttendant);
+
+        var speciality = SpecialityBuilder.NewObject().DomainBuild();
+        _specialityServiceFacadeMock.SetupSequence(s => s.GetByIdReturnsDomainObjectAsync(It.IsAny<int>()))
+            .Returns(Task.FromResult<Speciality?>(null));
+
+        // A
+        var updateResult = await _doctorAttendantService.UpdateAsync(doctorAttendantUpdate);
+
+        // A
+        _notificationHandlerMock.Verify(n => n.AddNotification(It.IsAny<string>(), It.IsAny<string>()), Times.Once());
+        _specialityServiceFacadeMock.Verify(s => s.GetByIdReturnsDomainObjectAsync(It.IsAny<int>()), Times.Once());
         _doctorAttendantMapperMock.Verify(d => d.UpdateToDomain(It.IsAny<DoctorAttendantUpdate>(), It.IsAny<DoctorAttendant>()), Times.Never());
         _validatorMock.Verify(v => v.ValidateAsync(It.IsAny<DoctorAttendant>(), It.IsAny<CancellationToken>()), Times.Never());
         _doctorAttendantRepositoryMock.Verify(d => d.UpdateAsync(It.IsAny<DoctorAttendant>()), Times.Never());
@@ -171,6 +266,7 @@ public sealed class DoctorAttendantServiceTests
 
         // A
         _notificationHandlerMock.Verify(n => n.AddNotification(It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(validationResult.Errors.Count));
+        _specialityServiceFacadeMock.Verify(s => s.GetByIdReturnsDomainObjectAsync(It.IsAny<int>()), Times.Never());
         _doctorAttendantRepositoryMock.Verify(d => d.UpdateAsync(It.IsAny<DoctorAttendant>()), Times.Never());
 
         Assert.False(updateResult);
