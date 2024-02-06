@@ -10,12 +10,18 @@ using FluentValidation;
 using ModularMonolith.Common.Interfaces;
 
 namespace Doctor.ApplicationService.Services;
-public sealed class SpecialityService(ISpecialityRepository specialityRepository, ISpecialityMapper specialityMapper,
-                                      INotificationHandler notificationHandler, IValidator<Speciality> validator)
-                                      : BaseService<Speciality>(notificationHandler, validator), ISpecialityService
+public sealed class SpecialityService : BaseService<Speciality>, ISpecialityService
 {
-    private readonly ISpecialityRepository _specialityRepository = specialityRepository;
-    private readonly ISpecialityMapper _specialityMapper = specialityMapper;
+    private readonly ISpecialityRepository _specialityRepository;
+    private readonly ISpecialityMapper _specialityMapper;
+
+    public SpecialityService(ISpecialityRepository specialityRepository, ISpecialityMapper specialityMapper,
+                             INotificationHandler notificationHandler, IValidator<Speciality> validator)
+                             : base(notificationHandler, validator)
+    {
+        _specialityRepository = specialityRepository;
+        _specialityMapper = specialityMapper;
+    }
 
     public async Task<bool> AddAsync(SpecialitySave specialitySave)
     {

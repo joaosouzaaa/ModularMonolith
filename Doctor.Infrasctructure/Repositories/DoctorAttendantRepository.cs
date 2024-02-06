@@ -7,8 +7,13 @@ using Microsoft.EntityFrameworkCore;
 using ModularMonolith.Common.Settings.PaginationSettings;
 
 namespace Doctor.Infrasctructure.Repositories;
-public sealed class DoctorAttendantRepository(DoctorDbContext dbContext) : BaseRepository<DoctorAttendant>(dbContext), IDoctorAttendantRepository
+public sealed class DoctorAttendantRepository : BaseRepository<DoctorAttendant>, IDoctorAttendantRepository
 {
+    public DoctorAttendantRepository(DoctorDbContext dbContext) : base(dbContext)
+    {
+        
+    }
+
     public async Task<bool> AddAsync(DoctorAttendant doctorAttendant)
     {
         await DbContextSet.AddAsync(doctorAttendant);
@@ -37,10 +42,16 @@ public sealed class DoctorAttendantRepository(DoctorDbContext dbContext) : BaseR
         return query.PaginateAsync(filter);
     }
 
-    public Task<DoctorAttendant?> GetByIdAsync(int id) =>
-        DbContextSet.AsNoTracking()
-                    .Include(d => d.Certification)
+    public Task<DoctorAttendant?> GetByIdAsync(int id, bool asNoTracking)
+    {
+        var query = (IQueryable<DoctorAttendant>)DbContextSet;
+
+        if (asNoTracking)
+            query = DbContextSet.AsNoTracking();
+
+        return DbContextSet.Include(d => d.Certification)
                     .Include(d => d.Specialities)
                     .Include(d => d.Schedules)
                     .FirstOrDefaultAsync(d => d.Id == id);
+    }
 }

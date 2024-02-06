@@ -2,11 +2,17 @@
 using ModularMonolith.Common.Interfaces;
 
 namespace Doctor.ApplicationService.Services.BaseServices;
-public abstract class BaseService<TEntity>(INotificationHandler notificationHandler, IValidator<TEntity> validator)
+public abstract class BaseService<TEntity>
     where TEntity : class
 {
-    protected readonly INotificationHandler _notificationHandler = notificationHandler;
-    private readonly IValidator<TEntity> _validator = validator;
+    protected readonly INotificationHandler _notificationHandler;
+    private readonly IValidator<TEntity> _validator;
+
+    public BaseService(INotificationHandler notificationHandler, IValidator<TEntity> validator)
+    {
+        _notificationHandler = notificationHandler;
+        _validator = validator;
+    }
 
     protected async Task<bool> ValidateAsync(TEntity entity)
     {

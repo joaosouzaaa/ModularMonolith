@@ -2,11 +2,16 @@
 using Microsoft.EntityFrameworkCore;
 
 namespace Doctor.Infrasctructure.Repositories.BaseRepositories;
-public abstract class BaseRepository<TEntity>(DoctorDbContext dbContext) : IDisposable
+public abstract class BaseRepository<TEntity> : IDisposable
     where TEntity : class
 {
-    protected readonly DoctorDbContext _dbContext = dbContext;
+    protected readonly DbContext _dbContext;
     protected DbSet<TEntity> DbContextSet => _dbContext.Set<TEntity>();
+
+    public BaseRepository(DoctorDbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
 
     public void Dispose()
     {

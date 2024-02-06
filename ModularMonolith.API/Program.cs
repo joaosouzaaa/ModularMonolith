@@ -1,5 +1,6 @@
 using ModularMonolith.API.Constants.CorsConstants;
 using ModularMonolith.API.DependencyInjection;
+using ModularMonolith.API.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 IConfiguration configuration = builder.Configuration;
@@ -15,6 +16,10 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+else
+{
+    app.UseMiddleware<UnexpectedErrorMiddleware>();
 }
 
 app.UseHttpsRedirection();

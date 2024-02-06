@@ -1,5 +1,6 @@
 ﻿using Doctor.ApplicationService.DataTransferObjects.DoctorAttendant;
 using Doctor.ApplicationService.Interfaces.Mappers;
+using Doctor.Domain.Arguments;
 using Doctor.Domain.Entities;
 using ModularMonolith.Common.Settings.PaginationSettings;
 
@@ -7,15 +8,11 @@ namespace Doctor.ApplicationService.Mappers;
 public sealed class DoctorAttendantMapper(ICertificationMapper certificationMapper, IScheduleMapper scheduleMapper,
                                           ISpecialityMapper specialityMapper) : IDoctorAttendantMapper
 {
-    private readonly ICertificationMapper _certificationMapper = certificationMapper;
-    private readonly IScheduleMapper _scheduleMapper = scheduleMapper;
-    private readonly ISpecialityMapper _specialityMapper = specialityMapper;
-
     public DoctorAttendant SaveToDomain(DoctorAttendantSave doctorAttendantSave) =>
         new()
         {
             BirthDate = doctorAttendantSave.BirthDate,
-            Certification = _certificationMapper.RequestToDomain(doctorAttendantSave.Certification),
+            Certification = certificationMapper.RequestToDomain(doctorAttendantSave.Certification),
             ExperienceYears = doctorAttendantSave.ExperienceYears,
             Name = doctorAttendantSave.Name,
             Schedules = [],
@@ -25,7 +22,7 @@ public sealed class DoctorAttendantMapper(ICertificationMapper certificationMapp
     public void UpdateToDomain(DoctorAttendantUpdate doctorAttendantUpdate, DoctorAttendant doctorAttendant)
     {
         doctorAttendant.BirthDate = doctorAttendantUpdate.BirthDate;
-        doctorAttendant.Certification = _certificationMapper.RequestToDomain(doctorAttendantUpdate.Certification);
+        doctorAttendant.Certification = certificationMapper.RequestToDomain(doctorAttendantUpdate.Certification);
         doctorAttendant.ExperienceYears = doctorAttendantUpdate.ExperienceYears;
         doctorAttendant.Name = doctorAttendantUpdate.Name;
     }
@@ -34,12 +31,22 @@ public sealed class DoctorAttendantMapper(ICertificationMapper certificationMapp
         new()
         {
             BirthDate = doctorAttendant.BirthDate,
-            Certification = _certificationMapper.DomainToResponse(doctorAttendant.Certification),
+            Certification = certificationMapper.DomainToResponse(doctorAttendant.Certification),
             ExperienceYears = doctorAttendant.ExperienceYears,
             Id = doctorAttendant.Id,
             Name = doctorAttendant.Name,
-            Schedules = _scheduleMapper.DomainListToResponseList(doctorAttendant.Schedules),
-            Specialities = _specialityMapper.DomainLisToResponseList(doctorAttendant.Specialities)
+            Schedules = scheduleMapper.DomainListToResponseList(doctorAttendant.Schedules),
+            Specialities = specialityMapper.DomainLisToResponseList(doctorAttendant.Specialities)
+        };
+
+    public DoctorGetAllFilterArgument FilterRequestToArgumentDomain(DoctorGetAllFilterRequest doctorGetAllFilterRequest) =>
+        new()
+        {
+            FinalTime = doctorGetAllFilterRequest.FinalTime,
+            InitialTime = doctorGetAllFilterRequest.InitialTime,
+            PageNumber = doctorGetAllFilterRequest.PageNumber,
+            PageSize = doctorGetAllFilterRequest.PageSize,
+            SpecialityIds = doctorGetAllFilterRequest.SpecialityIds
         };
 
     public PageList<DoctorAttendantResponse> DomainPageListToResponsePageList(PageList<DoctorAttendant> doctorAttendantPageList) =>

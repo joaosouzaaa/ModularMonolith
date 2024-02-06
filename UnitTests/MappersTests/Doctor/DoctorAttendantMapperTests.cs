@@ -66,6 +66,28 @@ public sealed class DoctorAttendantMapperTests
     }
 
     [Fact]
+    public void FilterRequestToArgumentDomain_SuccessfulScenario()
+    {
+        // A
+        var specialityIdList = new List<int>()
+        {
+            1,
+            2
+        };
+        var doctorGetAllFilterRequest = DoctorAttendantBuilder.NewObject().WithSpecialityIdList(specialityIdList).GetAllFilterRequestBuild();
+
+        // A
+        var doctorGetAllFilterArgumentResult = _doctorAttendantMapper.FilterRequestToArgumentDomain(doctorGetAllFilterRequest);
+
+        // A
+        Assert.Equal(doctorGetAllFilterArgumentResult.FinalTime, doctorGetAllFilterRequest.FinalTime);
+        Assert.Equal(doctorGetAllFilterArgumentResult.InitialTime, doctorGetAllFilterRequest.InitialTime);
+        Assert.Equal(doctorGetAllFilterArgumentResult.PageNumber, doctorGetAllFilterRequest.PageNumber);
+        Assert.Equal(doctorGetAllFilterArgumentResult.PageSize, doctorGetAllFilterRequest.PageSize);
+        Assert.Equal(doctorGetAllFilterArgumentResult.SpecialityIds.Count, doctorGetAllFilterRequest.SpecialityIds.Count);
+    }
+
+    [Fact]
     public void DomainToResponse_SuccessfulScenario()
     {
         // A
