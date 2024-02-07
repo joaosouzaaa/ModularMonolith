@@ -1,4 +1,6 @@
-﻿using Patient.Domain.Entities;
+﻿using Patient.ApplicationServices.DataTransferObjects.ContactInfo;
+using Patient.ApplicationServices.DataTransferObjects.PatientClient;
+using Patient.Domain.Entities;
 
 namespace UnitTests.TestBuilders.Patient;
 public sealed class PatientClientBuilder
@@ -7,6 +9,7 @@ public sealed class PatientClientBuilder
     private string _name = "test";
     private string _address = "test";
     private ContactInfo _contactInfo = ContactInfoBuilder.NewObject().DomainBuild();
+    private readonly ContactInfoRequest _contactInfoRequest = ContactInfoBuilder.NewObject().RequestBuild();
 
     public static PatientClientBuilder NewObject() =>
         new();
@@ -18,6 +21,26 @@ public sealed class PatientClientBuilder
             Name = _name,
             Address = _address,
             ContactInfo = _contactInfo
+        };
+
+    public PatientClientSave SaveBuild() =>
+        new(_name,
+            _address,
+            _contactInfoRequest);
+
+    public PatientClientUpdate UpdateBuild() =>
+        new(_id,
+            _name,
+            _address,
+            _contactInfoRequest);
+
+    public PatientClientResponse ResponseBuild() =>
+        new()
+        {
+            Address = _address,
+            ContactInfo = ContactInfoBuilder.NewObject().ResponseBuild(),
+            Id = _id,
+            Name = _name
         };
 
     public PatientClientBuilder WithName(string name)
