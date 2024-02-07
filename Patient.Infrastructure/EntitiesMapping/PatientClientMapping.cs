@@ -16,5 +16,10 @@ public sealed class PatientClientMapping : IEntityTypeConfiguration<PatientClien
             .IsRequired(true)
             .HasColumnName("name")
             .HasColumnType("varchar(100)");
+
+        builder.Property(p => p.Address)
+            .IsRequired(true)
+            .HasColumnName("address")
+            .HasColumnType("varchar(200)");
     }
 }
