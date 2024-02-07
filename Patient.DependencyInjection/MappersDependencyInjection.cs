@@ -7,6 +7,7 @@ public static class MappersDependencyInjection
 {
     public static void AddMappersDependencyInjection(this IServiceCollection services)
     {
-        services.AddScoped<IContactInfoMapper, ContactInfoMapper>();   
+        services.AddScoped<IContactInfoMapper, ContactInfoMapper>();
+        services.AddScoped<IPatientClientMapper, PatientClientMapper>();
     }
 }
