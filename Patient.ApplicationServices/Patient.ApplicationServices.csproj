@@ -10,4 +10,10 @@
     <ProjectReference Include="..\Patient.Infrastructure\Patient.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DataTransferObjects\PatientClient\" />
+    <Folder Include="Intefaces\Services\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+
 </Project>
