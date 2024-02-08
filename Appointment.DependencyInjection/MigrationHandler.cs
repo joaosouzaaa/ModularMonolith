@@ -1,6 +1,4 @@
 ﻿namespace Appointment.DependencyInjection;
-
-public class Class1
+public static class MigrationHandler
 {
-
 }

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Patient.Infrastructure.DatabaseContexts;
+using ModularMonolith.Common.Factories;
 
 namespace Patient.DependencyInjection;
 public static class PatientDependencyInjection
@@ -11,7 +12,7 @@ public static class PatientDependencyInjection
     {
         services.AddDbContext<PatientDbContext>(options =>
         {
-            options.UseNpgsql(configuration.GetConnectionString("LocalConnection"));
+            options.UseNpgsql(configuration.GetConnectionString());
             options.EnableSensitiveDataLogging();
             options.EnableDetailedErrors();
         });

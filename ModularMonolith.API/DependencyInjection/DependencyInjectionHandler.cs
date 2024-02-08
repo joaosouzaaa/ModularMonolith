@@ -1,5 +1,6 @@
 ﻿using Doctor.DependencyInjection;
 using Patient.DependencyInjection;
+using Appointment.DependencyInjection;
 
 namespace ModularMonolith.API.DependencyInjection;
 
@@ -12,6 +13,7 @@ public static class DependencyInjectionHandler
         services.AddSettingsDependencyInjection();
         services.AddFilterDependencyInjection();
 
+        services.AddAppointmentDependencyInjection(configuration);
         services.AddDoctorDependencyInjection(configuration);
         services.AddPatientDependencyInjection(configuration);
     }
