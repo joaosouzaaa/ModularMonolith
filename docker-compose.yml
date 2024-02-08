@@ -1,0 +1,31 @@
+version: '3.4'
+
+services:
+  rabbitmq:
+    image: "rabbitmq:3.9-management"
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      RABBITMQ_DEFAULT_USER: "guest"
+      RABBITMQ_DEFAULT_PASS: "guest"
+  
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: modularmonolith
+    ports:
+      - "5432:5432"
+
+  modularmonolith.api:
+    image: ${DOCKER_REGISTRY-}modularmonolithapi
+    build:
+      context: .
+      dockerfile: ModularMonolith.API/Dockerfile
+    environment:
+      - DOCKER_ENVIROMENT=DockerDevelopment
+    depends_on:
+      - rabbitmq
+      - postgres
