@@ -8,5 +8,7 @@ public static class AppointmentDependencyInjectionHandler
     {
         services.AddOptionsDependencyInjection(configuration);
         services.AddPublishersDependencyInjection();
+        services.AddRepositoriesDependencyInjection();
+        services.AddServicesDependencyInjection();
     }
 }

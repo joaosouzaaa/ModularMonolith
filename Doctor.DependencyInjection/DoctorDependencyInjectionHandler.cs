@@ -3,15 +3,17 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ModularMonolith.Common.Factories;
 
 namespace Doctor.DependencyInjection;
 public static class DoctorDependencyInjectionHandler
 {
     public static void AddDoctorDependencyInjection(this IServiceCollection services, IConfiguration configuration)
     {
+        Console.WriteLine(configuration.GetConnectionString());
         services.AddDbContext<DoctorDbContext>(options =>
         {
-            options.UseNpgsql(configuration.GetConnectionString("LocalConnection"));
+            options.UseNpgsql(configuration.GetConnectionString());
             options.EnableSensitiveDataLogging();
             options.EnableDetailedErrors();
         });

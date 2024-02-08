@@ -15,4 +15,10 @@
     <ProjectReference Include="..\Appointment.Domain\Appointment.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Interfaces\Repositories\" />
+    <Folder Include="EntitiesMapping\" />
+    <Folder Include="Repositories\" />
+  </ItemGroup>
+
 </Project>
