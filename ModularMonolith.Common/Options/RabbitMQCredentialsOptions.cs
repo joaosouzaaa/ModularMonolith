@@ -1,4 +1,4 @@
-﻿namespace Appointment.Domain.Options;
+﻿namespace ModularMonolith.Common.Options;
 public sealed class RabbitMQCredentialsOptions
 {
     public required string HostName { get; set; }

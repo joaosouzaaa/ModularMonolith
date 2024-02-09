@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Appointment.ApplicationService\Appointment.ApplicationService.csproj" />
     <ProjectReference Include="..\Doctor.ApplicationService\Doctor.ApplicationService.csproj" />
     <ProjectReference Include="..\Patient.ApplicationServices\Patient.ApplicationServices.csproj" />
   </ItemGroup>

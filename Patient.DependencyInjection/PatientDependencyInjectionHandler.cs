@@ -6,7 +6,7 @@ using Patient.Infrastructure.DatabaseContexts;
 using ModularMonolith.Common.Factories;
 
 namespace Patient.DependencyInjection;
-public static class PatientDependencyInjection
+public static class PatientDependencyInjectionHandler
 {
     public static void AddPatientDependencyInjection(this IServiceCollection services, IConfiguration configuration)
     {
