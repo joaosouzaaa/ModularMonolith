@@ -22,5 +22,6 @@ public static class DependencyInjectionHandler
     {
         app.UseDoctorDependencyInjection();
         app.UsePatientDependencyInjection();
+        app.UseAppointmentDependencyInjection();
     }
 }
