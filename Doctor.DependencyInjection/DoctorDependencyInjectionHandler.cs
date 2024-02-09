@@ -10,7 +10,6 @@ public static class DoctorDependencyInjectionHandler
 {
     public static void AddDoctorDependencyInjection(this IServiceCollection services, IConfiguration configuration)
     {
-        Console.WriteLine(configuration.GetConnectionString());
         services.AddDbContext<DoctorDbContext>(options =>
         {
             options.UseNpgsql(configuration.GetConnectionString());

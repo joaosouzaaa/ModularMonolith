@@ -3,5 +3,5 @@
 namespace Appointment.Infrastructure.Interfaces.Publishers;
 public interface IAppointmentPublisher
 {
-    void PublishAppointmentCreatedMessage(AppointmentCreatedEvent appointment);
+    void PublishAppointmentTimeCreatedMessage(AppointmentTimeCreatedEvent appointment);
 }

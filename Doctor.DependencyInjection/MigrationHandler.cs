@@ -9,11 +9,11 @@ public static class MigrationHandler
     public static void MigrateDatabase(this IApplicationBuilder app)
     {
         using var scope = app.ApplicationServices.CreateScope();
-        using var appContext = scope.ServiceProvider.GetRequiredService<DoctorDbContext>();
+        using var doctorDbContext = scope.ServiceProvider.GetRequiredService<DoctorDbContext>();
 
         try
         {
-            appContext.Database.Migrate();
+            doctorDbContext.Database.Migrate();
         }
         catch
         {

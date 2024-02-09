@@ -16,7 +16,7 @@ public sealed class AppointmentPublisher : IAppointmentPublisher
         _rabbitMQCredentialsOptions = rabbitMQOptions.Value;
     }
 
-    public void PublishAppointmentCreatedMessage(AppointmentCreatedEvent appointment)
+    public void PublishAppointmentTimeCreatedMessage(AppointmentTimeCreatedEvent appointment)
     {
         var factory = new ConnectionFactory()
         {

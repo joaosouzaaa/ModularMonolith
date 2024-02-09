@@ -1,4 +1,4 @@
 ﻿namespace Appointment.Domain.Contracts;
-public sealed record AppointmentCreatedEvent(DateTime Time,
+public sealed record AppointmentTimeCreatedEvent(DateTime Time,
                                              int DoctorAttendantId,
                                              int PatientClientId);

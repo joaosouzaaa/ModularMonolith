@@ -1,5 +1,5 @@
 ﻿namespace Appointment.Domain.Entities;
-public sealed class Appointment
+public sealed class AppointmentTime
 {
     public int Id { get; set; }
     public DateTime Time { get; set; }
