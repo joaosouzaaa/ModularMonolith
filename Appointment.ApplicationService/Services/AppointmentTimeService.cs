@@ -2,6 +2,8 @@
 using Appointment.ApplicationService.Interfaces.Mappers;
 using Appointment.ApplicationService.Interfaces.Services;
 using Appointment.Domain.Entities;
+using Appointment.Domain.Enums;
+using Appointment.Domain.Extensions;
 using Appointment.Infrastructure.Interfaces.Publishers;
 using Appointment.Infrastructure.Interfaces.Repositories;
 using FluentValidation;
@@ -15,6 +17,13 @@ public sealed class AppointmentTimeService(IAppointmentTimeRepository appointmen
 
     public async Task<bool> AddAsync(AppointmentTimeSave appointmentTimeSave)
     {
+        if(await appointmentTimeRepository.ExistsByTimeAndDoctorAsync(appointmentTimeSave.DoctorAttendantId, appointmentTimeSave.Time))
+        {
+            notificationHandler.AddNotification(nameof(EMessage.Exists), EMessage.Exists.Description().FormatTo("Time"));
+
+            return false;
+        }
+
         var appointmentTime = appointmentTimeMapper.SaveToDomain(appointmentTimeSave);
 
         if (!await ValidateAsync(appointmentTime))

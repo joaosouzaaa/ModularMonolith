@@ -16,6 +16,7 @@ public sealed class AppointmentPublisher(IOptions<RabbitMQCredentialsOptions> ra
         var factory = new ConnectionFactory()
         {
             HostName = _rabbitMQCredentialsOptions.HostName,
+            Port = _rabbitMQCredentialsOptions.Port,
             UserName = _rabbitMQCredentialsOptions.UserName,
             Password = _rabbitMQCredentialsOptions.Password
         };
