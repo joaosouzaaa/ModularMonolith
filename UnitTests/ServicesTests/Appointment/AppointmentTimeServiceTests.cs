@@ -1,6 +1,7 @@
 ﻿using Appointment.ApplicationService.DataTransferObjects.Appointment;
 using Appointment.ApplicationService.Interfaces.Mappers;
 using Appointment.ApplicationService.Services;
+using Appointment.Domain.Contracts;
 using Appointment.Domain.Entities;
 using Appointment.Infrastructure.Interfaces.Publishers;
 using Appointment.Infrastructure.Interfaces.Repositories;
@@ -42,8 +43,71 @@ public sealed class AppointmentTimeServiceTests
             .Returns(appointmentTime);
 
         var validationResult = new ValidationResult();
-        // A
+        _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<AppointmentTime>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(validationResult);
+
+        _appointmentTimeRepositoryMock.Setup(a => a.AddAsync(It.IsAny<AppointmentTime>()))
+            .ReturnsAsync(true);
+
+        var apointmentTimeCreatedEvent = AppointmentTimeBuilder.NewObject().CreatedEventBuild();
+        _appointmentTimeMapperMock.Setup(a => a.DomainToTimeCreatedEvent(It.IsAny<AppointmentTime>()))
+            .Returns(apointmentTimeCreatedEvent);
+
+        _appointmentPublisherMock.Setup(a => a.PublishAppointmentTimeCreatedMessage(It.IsAny<AppointmentTimeCreatedEvent>()));
 
         // A
+        var addResult = await _appointmentTimeService.AddAsync(appointTimeSave);
+
+        // A
+        _notificationHandlerMock.Verify(n => n.AddNotification(It.IsAny<string>(), It.IsAny<string>()), Times.Never());
+        _appointmentTimeRepositoryMock.Verify(a => a.AddAsync(It.IsAny<AppointmentTime>()), Times.Once());
+        _appointmentTimeMapperMock.Verify(a => a.DomainToTimeCreatedEvent(It.IsAny<AppointmentTime>()), Times.Once());
+        _appointmentPublisherMock.Verify(a => a.PublishAppointmentTimeCreatedMessage(It.IsAny<AppointmentTimeCreatedEvent>()), Times.Once());
+
+        Assert.True(addResult);
+    }
+
+    [Fact]
+    public async Task AddAsync_EntityInvalid_ReturnsFalse()
+    {
+        // A
+        var appointTimeSave = AppointmentTimeBuilder.NewObject().SaveBuild();
+
+        var appointmentTime = AppointmentTimeBuilder.NewObject().DomainBuild();
+        _appointmentTimeMapperMock.Setup(a => a.SaveToDomain(It.IsAny<AppointmentTimeSave>()))
+            .Returns(appointmentTime);
+
+        var validationFailureList = new List<ValidationFailure>()
+        {
+            new("ste", "atest"),
+            new("ste", "atest"),
+            new("ste", "atest")
+        };
+        var validationResult = new ValidationResult()
+        {
+            Errors = validationFailureList
+        };
+        _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<AppointmentTime>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(validationResult);
+
+        _appointmentTimeRepositoryMock.Setup(a => a.AddAsync(It.IsAny<AppointmentTime>()))
+            .ReturnsAsync(true);
+
+        var apointmentTimeCreatedEvent = AppointmentTimeBuilder.NewObject().CreatedEventBuild();
+        _appointmentTimeMapperMock.Setup(a => a.DomainToTimeCreatedEvent(It.IsAny<AppointmentTime>()))
+            .Returns(apointmentTimeCreatedEvent);
+
+        _appointmentPublisherMock.Setup(a => a.PublishAppointmentTimeCreatedMessage(It.IsAny<AppointmentTimeCreatedEvent>()));
+
+        // A
+        var addResult = await _appointmentTimeService.AddAsync(appointTimeSave);
+
+        // A
+        _notificationHandlerMock.Verify(n => n.AddNotification(It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(validationResult.Errors.Count));
+        _appointmentTimeRepositoryMock.Verify(a => a.AddAsync(It.IsAny<AppointmentTime>()), Times.Never());
+        _appointmentTimeMapperMock.Verify(a => a.DomainToTimeCreatedEvent(It.IsAny<AppointmentTime>()), Times.Never());
+        _appointmentPublisherMock.Verify(a => a.PublishAppointmentTimeCreatedMessage(It.IsAny<AppointmentTimeCreatedEvent>()), Times.Never());
+
+        Assert.False(addResult);
     }
 }
