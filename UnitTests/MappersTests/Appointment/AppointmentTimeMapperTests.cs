@@ -25,4 +25,19 @@ public sealed class AppointmentTimeMapperTests
         Assert.Equal(appointmentTimeResult.PatientClientId, appointmentTimeSave.PatientClientId);
         Assert.Equal(appointmentTimeResult.Time, appointmentTimeSave.Time);
     }
+
+    [Fact]
+    public void DomainToTimeCreatedEvent()
+    {
+        // A
+        var appointmentTime = AppointmentTimeBuilder.NewObject().DomainBuild();
+
+        // A
+        var appointmentTimeCreatedEventResult = _appointmentTimeMapper.DomainToTimeCreatedEvent(appointmentTime);
+
+        // A
+        Assert.Equal(appointmentTimeCreatedEventResult.Time, appointmentTime.Time);
+        Assert.Equal(appointmentTimeCreatedEventResult.DoctorAttendantId, appointmentTime.DoctorAttendantId);
+        Assert.Equal(appointmentTimeCreatedEventResult.PatientClientId, appointmentTime.PatientClientId);
+    }
 }

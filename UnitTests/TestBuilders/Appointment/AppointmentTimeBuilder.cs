@@ -1,4 +1,5 @@
 ﻿using Appointment.ApplicationService.DataTransferObjects.Appointment;
+using Appointment.Domain.Contracts;
 using Appointment.Domain.Entities;
 
 namespace UnitTests.TestBuilders.Appointment;
@@ -22,6 +23,11 @@ public sealed class AppointmentTimeBuilder
 
     public AppointmentTimeSave SaveBuild() =>
         new(_time, 
+            _doctorAttendantId,
+            _patientClientId);
+
+    public AppointmentTimeCreatedEvent CreatedEventBuild() =>
+        new(_time,
             _doctorAttendantId,
             _patientClientId);
 
