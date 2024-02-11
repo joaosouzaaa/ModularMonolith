@@ -25,11 +25,14 @@ public sealed class AppointmentPublisher(IOptions<RabbitMQCredentialsOptions> ra
         using var connection = factory.CreateConnection();
         using var channel = connection.CreateModel();
 
-        channel.QueueDeclare(queue: RabbitMQConstants.ApointmentQueue, durable: false, exclusive: false, autoDelete: false, arguments: null);
+        channel.ExchangeDeclare(RabbitMQConstants.AppointmentExchange, ExchangeType.Fanout);
+
+        channel.QueueDeclare(queue: RabbitMQConstants.ApointmentDoctorQueue, durable: false, exclusive: false, autoDelete: false, arguments: null);
+        channel.QueueDeclare(queue: RabbitMQConstants.ApointmentPatientQueue, durable: false, exclusive: false, autoDelete: false, arguments: null);
 
         var appointmentJsonString = JsonSerializer.Serialize(appointment);
         var body = Encoding.UTF8.GetBytes(appointmentJsonString);
 
-        channel.BasicPublish(exchange: "", routingKey: RabbitMQConstants.ApointmentQueue, basicProperties: null, body: body);
+        channel.BasicPublish(exchange: RabbitMQConstants.AppointmentExchange, routingKey: "", basicProperties: null, body: body);
     }
 }

@@ -1,16 +1,16 @@
-﻿using Doctor.ApplicationService.Interfaces.Services;
-using Doctor.Domain.Constants;
-using Doctor.Domain.Contracts;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using ModularMonolith.Common.Options;
+using Patient.ApplicationServices.Intefaces.Services;
+using Patient.Domain.Constants;
+using Patient.Domain.Contracts;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
 using System.Text.Json;
 
-namespace Doctor.ApplicationService.Consumers;
+namespace Patient.ApplicationService.Consumers;
 public sealed class AppointmentCreatedConsumer(IOptions<RabbitMQCredentialsOptions> rabbitMQOptions, IServiceScopeFactory scopeFactory) : BackgroundService
 {
     private readonly RabbitMQCredentialsOptions _rabbitMQCredentialsOptions = rabbitMQOptions.Value;
@@ -24,14 +24,15 @@ public sealed class AppointmentCreatedConsumer(IOptions<RabbitMQCredentialsOptio
             UserName = _rabbitMQCredentialsOptions.UserName,
             Password = _rabbitMQCredentialsOptions.Password
         };
+
         using var connection = factory.CreateConnection();
         using var channel = connection.CreateModel();
 
         channel.ExchangeDeclare(RabbitMQConstants.AppointmentExchange, ExchangeType.Fanout);
 
-        channel.QueueDeclare(queue: RabbitMQConstants.AppointmentDoctorQueue, durable: false, exclusive: false, autoDelete: false, arguments: null);
+        channel.QueueDeclare(queue: RabbitMQConstants.ApointmentPatientQueue, durable: false, exclusive: false, autoDelete: false, arguments: null);
 
-        channel.QueueBind(RabbitMQConstants.AppointmentDoctorQueue, RabbitMQConstants.AppointmentExchange, RabbitMQConstants.AppointmentDoctorQueue);
+        channel.QueueBind(RabbitMQConstants.ApointmentPatientQueue, RabbitMQConstants.AppointmentExchange, RabbitMQConstants.ApointmentPatientQueue);
 
         var consumer = new EventingBasicConsumer(channel);
 
@@ -40,7 +41,7 @@ public sealed class AppointmentCreatedConsumer(IOptions<RabbitMQCredentialsOptio
             await HandleAppointmentTimeCreatedMessageAsync(eventArgs);
         };
 
-        channel.BasicConsume(queue: RabbitMQConstants.AppointmentDoctorQueue, autoAck: true, consumer: consumer);
+        channel.BasicConsume(queue: RabbitMQConstants.ApointmentPatientQueue, autoAck: true, consumer: consumer);
 
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -53,12 +54,12 @@ public sealed class AppointmentCreatedConsumer(IOptions<RabbitMQCredentialsOptio
     {
         var body = eventArgs.Body.ToArray();
         var message = Encoding.UTF8.GetString(body);
-        var appointmentTimeCreatedEvent = JsonSerializer.Deserialize<AppointmentTimeCreatedEvent>(message)!;
+        var appointmentTimeCreatedEvent = JsonSerializer.Deserialize<AppointmentTimeCreatedEvent>(message);
 
         using var scope = scopeFactory.CreateScope();
 
-        var scheduleService = scope.ServiceProvider.GetRequiredService<IScheduleService>();
+        var emailService = scope.ServiceProvider.GetRequiredService<IEmailService>();
 
-        await scheduleService.AddAsync(appointmentTimeCreatedEvent);
+        await emailService.SendAppointmentEmailAsync(appointmentTimeCreatedEvent!);
     }
 }

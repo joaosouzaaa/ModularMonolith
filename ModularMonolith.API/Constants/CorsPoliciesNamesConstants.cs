@@ -1,4 +1,4 @@
-﻿namespace ModularMonolith.API.Constants.CorsConstants;
+﻿namespace ModularMonolith.API.Constants;
 
 public static class CorsPoliciesNamesConstants
 {
