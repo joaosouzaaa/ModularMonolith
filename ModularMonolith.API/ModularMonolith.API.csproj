@@ -11,13 +11,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="Controllers\Modules\Appointment\**" />
-	  <Content Remove="Controllers\Modules\Appointment\**" />
-	  <EmbeddedResource Remove="Controllers\Modules\Appointment\**" />
-	  <None Remove="Controllers\Modules\Appointment\**" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.1">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

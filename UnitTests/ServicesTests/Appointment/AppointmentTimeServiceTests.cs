@@ -38,6 +38,9 @@ public sealed class AppointmentTimeServiceTests
         // A
         var appointTimeSave = AppointmentTimeBuilder.NewObject().SaveBuild();
 
+        _appointmentTimeRepositoryMock.Setup(a => a.ExistsByTimeAndDoctorAsync(It.IsAny<int>(), It.IsAny<DateTime>()))
+            .ReturnsAsync(false);
+
         var appointmentTime = AppointmentTimeBuilder.NewObject().DomainBuild();
         _appointmentTimeMapperMock.Setup(a => a.SaveToDomain(It.IsAny<AppointmentTimeSave>()))
             .Returns(appointmentTime);
@@ -68,10 +71,35 @@ public sealed class AppointmentTimeServiceTests
     }
 
     [Fact]
+    public async Task AddAsync_TimeAlreadyExists_ReturnsFalse()
+    {
+        // A
+        var appointTimeSave = AppointmentTimeBuilder.NewObject().SaveBuild();
+
+        _appointmentTimeRepositoryMock.Setup(a => a.ExistsByTimeAndDoctorAsync(It.IsAny<int>(), It.IsAny<DateTime>()))
+            .ReturnsAsync(true);
+
+        // A
+        var addResult = await _appointmentTimeService.AddAsync(appointTimeSave);
+
+        // A
+        _notificationHandlerMock.Verify(n => n.AddNotification(It.IsAny<string>(), It.IsAny<string>()), Times.Once());
+        _appointmentTimeMapperMock.Verify(a => a.SaveToDomain(It.IsAny<AppointmentTimeSave>()), Times.Never());
+        _appointmentTimeRepositoryMock.Verify(a => a.AddAsync(It.IsAny<AppointmentTime>()), Times.Never());
+        _appointmentTimeMapperMock.Verify(a => a.DomainToTimeCreatedEvent(It.IsAny<AppointmentTime>()), Times.Never());
+        _appointmentPublisherMock.Verify(a => a.PublishAppointmentTimeCreatedMessage(It.IsAny<AppointmentTimeCreatedEvent>()), Times.Never());
+
+        Assert.False(addResult);
+    }
+
+    [Fact]
     public async Task AddAsync_EntityInvalid_ReturnsFalse()
     {
         // A
         var appointTimeSave = AppointmentTimeBuilder.NewObject().SaveBuild();
+        
+        _appointmentTimeRepositoryMock.Setup(a => a.ExistsByTimeAndDoctorAsync(It.IsAny<int>(), It.IsAny<DateTime>()))
+            .ReturnsAsync(false);
 
         var appointmentTime = AppointmentTimeBuilder.NewObject().DomainBuild();
         _appointmentTimeMapperMock.Setup(a => a.SaveToDomain(It.IsAny<AppointmentTimeSave>()))
