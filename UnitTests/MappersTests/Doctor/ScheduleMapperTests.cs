@@ -27,4 +27,18 @@ public sealed class ScheduleMapperTests
         // A
         Assert.Equal(scheduleResponseListResult.Count, scheduleList.Count);
     }
+
+    [Fact]
+    public void AppointmentTimeCreatedEventToDomain_SuccessfulScenario()
+    {
+        // A
+        var appointmentTimeCreatedEvent = ContractsBuilder.NewObject().AppointmentTimeCreatedEventBuild();
+
+        // A
+        var scheduleResult = _scheduleMapper.AppointmentTimeCreatedEventToDomain(appointmentTimeCreatedEvent);
+
+        // A
+        Assert.Equal(scheduleResult.DoctorAttendantId, appointmentTimeCreatedEvent.DoctorAttendantId);
+        Assert.Equal(scheduleResult.Time, appointmentTimeCreatedEvent.Time);
+    }
 }

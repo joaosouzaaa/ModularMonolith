@@ -1,4 +1,5 @@
-﻿using Appointment.Domain.Contracts;
+﻿using Appointment.Domain.Constants;
+using Appointment.Domain.Contracts;
 using Appointment.Infrastructure.Interfaces.Publishers;
 using Microsoft.Extensions.Options;
 using ModularMonolith.Common.Options;
@@ -24,12 +25,11 @@ public sealed class AppointmentPublisher(IOptions<RabbitMQCredentialsOptions> ra
         using var connection = factory.CreateConnection();
         using var channel = connection.CreateModel();
 
-        const string queueName = "appointment_queue";
-        channel.QueueDeclare(queue: queueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
+        channel.QueueDeclare(queue: RabbitMQConstants.ApointmentQueue, durable: false, exclusive: false, autoDelete: false, arguments: null);
 
         var appointmentJsonString = JsonSerializer.Serialize(appointment);
         var body = Encoding.UTF8.GetBytes(appointmentJsonString);
 
-        channel.BasicPublish(exchange: "", routingKey: queueName, basicProperties: null, body: body);
+        channel.BasicPublish(exchange: "", routingKey: RabbitMQConstants.ApointmentQueue, basicProperties: null, body: body);
     }
 }
