@@ -5,7 +5,7 @@ The goal of this project is to show the implementation of a modular monolith arc
 # Technologies used
 - .NET 8
 - C#
-- EntityFrameworkCore;
+- EntityFrameworkCore
 - PostgreSQL
 - xUnit
 - Moq
