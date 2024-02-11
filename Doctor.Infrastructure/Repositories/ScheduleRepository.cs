@@ -6,4 +6,10 @@ using Doctor.Infrasctructure.Repositories.BaseRepositories;
 namespace Doctor.Infrasctructure.Repositories;
 public sealed class ScheduleRepository(DoctorDbContext dbContext) : BaseRepository<Schedule>(dbContext), IScheduleRepository
 {
+    public async Task<bool> AddAsync(Schedule schedule)
+    {
+        await DbContextSet.AddAsync(schedule);
+
+        return await SaveChangesAsync();
+    }
 }

@@ -21,6 +21,7 @@ public static class DoctorDependencyInjectionHandler
         services.AddMappersDependencyInjection();
         services.AddValidatorsDependencyInjection();
         services.AddServicesDependencyInjection();
+        services.AddConsumersDependencyInjection();
     }
 
     public static void UseDoctorDependencyInjection(this IApplicationBuilder app)

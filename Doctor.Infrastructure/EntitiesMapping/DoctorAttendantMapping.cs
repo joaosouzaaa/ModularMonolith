@@ -34,7 +34,8 @@ public sealed class DoctorAttendantMapping : IEntityTypeConfiguration<DoctorAtte
 
         builder.HasMany(d => d.Schedules)
             .WithOne(s => s.Doctor)
-            .HasForeignKey(s => s.DoctorId)
+            .HasForeignKey(s => s.DoctorAttendantId)
+            .HasConstraintName("FK_DoctorAttendant_Schedule")
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasMany(d => d.Specialities)
