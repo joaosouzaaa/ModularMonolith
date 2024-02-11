@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Patient.Domain.Constants;
 using Patient.Domain.Entities;
-using Patient.Infrastructure.Constants;
 
 namespace Patient.Infrastructure.EntitiesMapping;
 public sealed class ContactInfoMapping : IEntityTypeConfiguration<ContactInfo>

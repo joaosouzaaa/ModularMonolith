@@ -4,7 +4,7 @@ using Patient.Infrastructure.DatabaseContexts;
 using Patient.Infrastructure.Interfaces.Repositories;
 
 namespace Patient.Infrastructure.Repositories;
-public sealed class PatientClientRepository(PatientDbContext dbContext) : IPatientClientRepository, IDisposable
+public sealed class PatientClientRepository(PatientDbContext dbContext) : IPatientClientRepository, IPatientClientRepositoryFacade, IDisposable
 {
     private DbSet<PatientClient> DbContextSet => dbContext.Set<PatientClient>();
 
@@ -32,6 +32,9 @@ public sealed class PatientClientRepository(PatientDbContext dbContext) : IPatie
 
         return query.Include(p => p.ContactInfo).FirstOrDefaultAsync(p => p.Id == id);
     }
+
+    public Task<string?> GetEmailByIdAsync(int id) =>
+        DbContextSet.Where(p => p.Id == id).Select(p => p.ContactInfo.Email).FirstOrDefaultAsync();
 
     public void Dispose()
     {

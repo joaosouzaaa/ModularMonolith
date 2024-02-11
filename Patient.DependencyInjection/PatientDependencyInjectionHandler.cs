@@ -18,9 +18,11 @@ public static class PatientDependencyInjectionHandler
         });
 
         services.AddRepositoriesDependencyInjection();
+        services.AddEmailSettingsDependencyInjection();
         services.AddValidatorsDependencyInjection();
         services.AddMappersDependencyInjection();
         services.AddServicesDependencyInjection();
+        services.AddConsumersDependencyInjection();
     }
 
     public static void UsePatientDependencyInjection(this IApplicationBuilder app)

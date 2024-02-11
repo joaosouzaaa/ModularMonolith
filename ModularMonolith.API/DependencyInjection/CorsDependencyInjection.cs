@@ -1,4 +1,4 @@
-﻿using ModularMonolith.API.Constants.CorsConstants;
+﻿using ModularMonolith.API.Constants;
 
 namespace ModularMonolith.API.DependencyInjection;
 
