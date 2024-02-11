@@ -12,6 +12,7 @@ public static class DependencyInjectionHandler
 
         services.AddSettingsDependencyInjection();
         services.AddFilterDependencyInjection();
+        services.AddOptionsDependencyInjection(configuration);
 
         services.AddAppointmentDependencyInjection(configuration);
         services.AddDoctorDependencyInjection(configuration);

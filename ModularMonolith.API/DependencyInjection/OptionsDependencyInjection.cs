@@ -1,8 +1,6 @@
-﻿using Appointment.Domain.Options;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using ModularMonolith.Common.Options;
 
-namespace Appointment.DependencyInjection;
+namespace ModularMonolith.API.DependencyInjection;
 public static class OptionsDependencyInjection
 {
     public static void AddOptionsDependencyInjection(this IServiceCollection services, IConfiguration configuration)

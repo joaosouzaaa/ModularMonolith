@@ -16,6 +16,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Appointment.Domain\Appointment.Domain.csproj" />
+		<ProjectReference Include="..\ModularMonolith.Common\ModularMonolith.Common.csproj" />
 	</ItemGroup>
 
 </Project>

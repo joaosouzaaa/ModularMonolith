@@ -17,9 +17,10 @@ public static class AppointmentDependencyInjectionHandler
             options.EnableDetailedErrors();
         });
 
-        services.AddOptionsDependencyInjection(configuration);
         services.AddPublishersDependencyInjection();
         services.AddRepositoriesDependencyInjection();
+        services.AddValidatorsDependencyInjection();
+        services.AddMappersDependencyInjection();
         services.AddServicesDependencyInjection();
     }
 
