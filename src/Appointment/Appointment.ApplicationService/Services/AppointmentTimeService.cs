@@ -1,12 +1,12 @@
 ﻿using Appointment.Domain.DataTransferObjects.Appointment;
 using Appointment.Domain.Entities;
 using Appointment.Domain.Enums;
-using Appointment.Domain.Extensions;
 using Appointment.Domain.Interfaces.Mappers;
 using Appointment.Domain.Interfaces.Publishers;
 using Appointment.Domain.Interfaces.Repositories;
 using Appointment.Domain.Interfaces.Services;
 using FluentValidation;
+using ModularMonolith.Common.Extensions;
 using ModularMonolith.Common.Interfaces.Settings;
 
 namespace Appointment.ApplicationService.Services;
@@ -20,9 +20,9 @@ public sealed class AppointmentTimeService(
     : IAppointmentTimeService
 {
 
-    public async Task<bool> AddAsync(AppointmentTimeSave appointmentTimeSave)
+    public async Task<bool> AddAsync(AppointmentTimeSave appointmentTimeSave, CancellationToken cancellationToken)
     {
-        if (await appointmentTimeRepository.ExistsByTimeAndDoctorAsync(appointmentTimeSave.DoctorAttendantId, appointmentTimeSave.Time))
+        if (await appointmentTimeRepository.ExistsByTimeAndDoctorAsync(appointmentTimeSave.DoctorAttendantId, appointmentTimeSave.Time, cancellationToken))
         {
             notificationHandler.AddNotification(nameof(EMessage.Exists), EMessage.Exists.Description().FormatTo("Time"));
 
@@ -31,12 +31,12 @@ public sealed class AppointmentTimeService(
 
         var appointmentTime = appointmentTimeMapper.SaveToDomain(appointmentTimeSave);
 
-        if (!await ValidateAsync(appointmentTime))
+        if (!await IsValidAsync(appointmentTime, cancellationToken))
         {
             return false;
         }
 
-        var addResult = await appointmentTimeRepository.AddAsync(appointmentTime);
+        var addResult = await appointmentTimeRepository.AddAsync(appointmentTime, cancellationToken);
 
         var appointmentTimeCreatedEvent = appointmentTimeMapper.DomainToTimeCreatedEvent(appointmentTime);
         appointmentPublisher.PublishAppointmentTimeCreatedMessage(appointmentTimeCreatedEvent);
@@ -44,9 +44,9 @@ public sealed class AppointmentTimeService(
         return addResult;
     }
 
-    private async Task<bool> ValidateAsync(AppointmentTime appointmentTime)
+    private async Task<bool> IsValidAsync(AppointmentTime appointmentTime, CancellationToken cancellationToken)
     {
-        var validationResult = await validator.ValidateAsync(appointmentTime);
+        var validationResult = await validator.ValidateAsync(appointmentTime, cancellationToken);
 
         if (validationResult.IsValid)
         {

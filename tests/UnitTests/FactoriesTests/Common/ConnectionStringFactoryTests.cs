@@ -2,17 +2,20 @@
 using ModularMonolith.Common.Factories;
 
 namespace UnitTests.FactoriesTests.Common;
+
 public sealed class ConnectionStringFactoryTests
 {
     [Fact]
-    public void GetConnectionString_ReturnsContainerConnection()
+    public void GetConnectionString_SuccessfulScenario_ReturnsContainerConnection()
     {
         // A
         const string containerConnection = "test";
+
         var inMemoryCollection = new Dictionary<string, string>()
         {
             {"ConnectionStrings:ContainerConnection", containerConnection }
         };
+
         IConfiguration configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(inMemoryCollection!)
             .Build();
@@ -27,14 +30,16 @@ public sealed class ConnectionStringFactoryTests
     }
 
     [Fact]
-    public void GetConnectionString_ReturnsLocalConnection()
+    public void GetConnectionString_SuccessfulScenario_ReturnsLocalConnection()
     {
         // A
         const string localConnection = "joao";
+
         var inMemoryCollection = new Dictionary<string, string>()
         {
             {"ConnectionStrings:LocalConnection", localConnection}
         };
+
         IConfiguration configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(inMemoryCollection!)
             .Build();

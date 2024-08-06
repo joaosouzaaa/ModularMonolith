@@ -2,6 +2,7 @@
 using UnitTests.TestBuilders.Appointment;
 
 namespace UnitTests.MappersTests.Appointment;
+
 public sealed class AppointmentTimeMapperTests
 {
     private readonly AppointmentTimeMapper _appointmentTimeMapper;
@@ -12,22 +13,7 @@ public sealed class AppointmentTimeMapperTests
     }
 
     [Fact]
-    public void SaveToDomain_SuccessfulScenario()
-    {
-        // A
-        var appointmentTimeSave = AppointmentTimeBuilder.NewObject().SaveBuild();
-
-        // A
-        var appointmentTimeResult = _appointmentTimeMapper.SaveToDomain(appointmentTimeSave);
-
-        // A
-        Assert.Equal(appointmentTimeResult.DoctorAttendantId, appointmentTimeSave.DoctorAttendantId);
-        Assert.Equal(appointmentTimeResult.PatientClientId, appointmentTimeSave.PatientClientId);
-        Assert.Equal(appointmentTimeResult.Time, appointmentTimeSave.Time);
-    }
-
-    [Fact]
-    public void DomainToTimeCreatedEvent()
+    public void DomainToTimeCreatedEvent_SuccessfulScenario_ReturnsEvent()
     {
         // A
         var appointmentTime = AppointmentTimeBuilder.NewObject().DomainBuild();
@@ -39,5 +25,20 @@ public sealed class AppointmentTimeMapperTests
         Assert.Equal(appointmentTimeCreatedEventResult.Time, appointmentTime.Time);
         Assert.Equal(appointmentTimeCreatedEventResult.DoctorAttendantId, appointmentTime.DoctorAttendantId);
         Assert.Equal(appointmentTimeCreatedEventResult.PatientClientId, appointmentTime.PatientClientId);
+    }
+
+    [Fact]
+    public void SaveToDomain_SuccessfulScenario_ReturnsDomainEntity()
+    {
+        // A
+        var appointmentTimeSave = AppointmentTimeBuilder.NewObject().SaveBuild();
+
+        // A
+        var appointmentTimeResult = _appointmentTimeMapper.SaveToDomain(appointmentTimeSave);
+
+        // A
+        Assert.Equal(appointmentTimeResult.DoctorAttendantId, appointmentTimeSave.DoctorAttendantId);
+        Assert.Equal(appointmentTimeResult.PatientClientId, appointmentTimeSave.PatientClientId);
+        Assert.Equal(appointmentTimeResult.Time, appointmentTimeSave.Time);
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Appointment.Domain.Extensions;
+﻿namespace ModularMonolith.Common.Extensions;
 
 public static class StringFormatExtension
 {

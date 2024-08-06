@@ -1,14 +1,15 @@
 ﻿using Appointment.Domain.Enums;
-using Appointment.Domain.Extensions;
+using ModularMonolith.Common.Extensions;
 
-namespace UnitTests.ExtensionTests.Appointment;
-public sealed class MessageExtensionTests
+namespace UnitTests.ExtensionTests;
+
+public sealed class EnumExtensionTests
 {
     [Fact]
     public void Description_Equals_AsIntended()
     {
         // A
-        var messageToGetDescription = EMessage.GreaterThan;
+        const EMessage messageToGetDescription = EMessage.GreaterThan;
 
         // A
         var messageDescription = messageToGetDescription.Description();

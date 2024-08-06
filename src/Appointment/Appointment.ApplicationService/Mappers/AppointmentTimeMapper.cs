@@ -7,6 +7,11 @@ namespace Appointment.ApplicationService.Mappers;
 
 public sealed class AppointmentTimeMapper : IAppointmentTimeMapper
 {
+    public AppointmentTimeCreatedEvent DomainToTimeCreatedEvent(AppointmentTime appointmentTime) =>
+        new(appointmentTime.Time,
+            appointmentTime.DoctorAttendantId,
+            appointmentTime.PatientClientId);
+
     public AppointmentTime SaveToDomain(AppointmentTimeSave appointmentTimeSave) =>
         new()
         {
@@ -14,9 +19,4 @@ public sealed class AppointmentTimeMapper : IAppointmentTimeMapper
             PatientClientId = appointmentTimeSave.PatientClientId,
             Time = appointmentTimeSave.Time
         };
-
-    public AppointmentTimeCreatedEvent DomainToTimeCreatedEvent(AppointmentTime appointmentTime) =>
-        new(appointmentTime.Time,
-            appointmentTime.DoctorAttendantId,
-            appointmentTime.PatientClientId);
 }

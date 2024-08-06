@@ -13,6 +13,6 @@ public sealed class AppointmentTimeController(IAppointmentTimeService appointmen
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(List<Notification>))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public Task<bool> AddAsync([FromBody] AppointmentTimeSave appointmentTimeSave) =>
-        appointmentTimeService.AddAsync(appointmentTimeSave);
+    public Task<bool> AddAsync([FromBody] AppointmentTimeSave appointmentTimeSave, CancellationToken cancellationToken) =>
+        appointmentTimeService.AddAsync(appointmentTimeSave, cancellationToken);
 }

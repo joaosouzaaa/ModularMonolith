@@ -4,5 +4,5 @@ namespace Appointment.Domain.Interfaces.Services;
 
 public interface IAppointmentTimeService
 {
-    Task<bool> AddAsync(AppointmentTimeSave appointmentTimeSave);
+    Task<bool> AddAsync(AppointmentTimeSave appointmentTimeSave, CancellationToken cancellationToken);
 }

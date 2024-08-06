@@ -5,17 +5,24 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Appointment.Infrastructure.Repositories;
 
-public sealed class AppointmentTimeRepository(AppointmentDbContext dbContext) : IAppointmentTimeRepository
+public sealed class AppointmentTimeRepository(AppointmentDbContext dbContext) : IAppointmentTimeRepository, IDisposable
 {
     private DbSet<AppointmentTime> DbContextSet => dbContext.Set<AppointmentTime>();
 
-    public async Task<bool> AddAsync(AppointmentTime appointmentTime)
+    public async Task<bool> AddAsync(AppointmentTime appointmentTime, CancellationToken cancellationToken)
     {
-        await DbContextSet.AddAsync(appointmentTime);
+        await DbContextSet.AddAsync(appointmentTime, cancellationToken);
 
-        return await dbContext.SaveChangesAsync() > 0;
+        return await dbContext.SaveChangesAsync(cancellationToken) > 0;
     }
 
-    public Task<bool> ExistsByTimeAndDoctorAsync(int doctorAttendantId, DateTime time) =>
-        DbContextSet.AnyAsync(a => a.DoctorAttendantId == doctorAttendantId && a.Time == time);
+    public Task<bool> ExistsByTimeAndDoctorAsync(int doctorAttendantId, DateTime time, CancellationToken cancellationToken) =>
+        DbContextSet.AnyAsync(a => a.DoctorAttendantId == doctorAttendantId && a.Time == time, cancellationToken);
+
+    public void Dispose()
+    {
+        dbContext.Dispose();
+
+        GC.SuppressFinalize(this);
+    }
 }

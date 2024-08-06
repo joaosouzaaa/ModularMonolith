@@ -6,6 +6,6 @@ namespace Appointment.Domain.Interfaces.Mappers;
 
 public interface IAppointmentTimeMapper
 {
-    AppointmentTime SaveToDomain(AppointmentTimeSave appointmentTimeSave);
     AppointmentTimeCreatedEvent DomainToTimeCreatedEvent(AppointmentTime appointmentTime);
+    AppointmentTime SaveToDomain(AppointmentTimeSave appointmentTimeSave);
 }

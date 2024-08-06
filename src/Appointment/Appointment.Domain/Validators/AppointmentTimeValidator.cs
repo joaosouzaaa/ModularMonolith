@@ -1,7 +1,7 @@
 ﻿using Appointment.Domain.Entities;
 using Appointment.Domain.Enums;
-using Appointment.Domain.Extensions;
 using FluentValidation;
+using ModularMonolith.Common.Extensions;
 
 namespace Appointment.Domain.Validators;
 

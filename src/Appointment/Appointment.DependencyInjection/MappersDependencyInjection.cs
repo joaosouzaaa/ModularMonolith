@@ -4,8 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Appointment.DependencyInjection;
 
-public static class MappersDependencyInjection
+internal static class MappersDependencyInjection
 {
-    public static void AddMappersDependencyInjection(this IServiceCollection services) =>
+    internal static void AddMappersDependencyInjection(this IServiceCollection services) =>
         services.AddScoped<IAppointmentTimeMapper, AppointmentTimeMapper>();
 }

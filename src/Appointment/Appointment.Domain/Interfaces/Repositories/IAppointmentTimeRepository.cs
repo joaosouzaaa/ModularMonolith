@@ -4,6 +4,6 @@ namespace Appointment.Domain.Interfaces.Repositories;
 
 public interface IAppointmentTimeRepository
 {
-    Task<bool> AddAsync(AppointmentTime appointmentTime);
-    Task<bool> ExistsByTimeAndDoctorAsync(int doctorAttendantId, DateTime time);
+    Task<bool> AddAsync(AppointmentTime appointmentTime, CancellationToken cancellationToken);
+    Task<bool> ExistsByTimeAndDoctorAsync(int doctorAttendantId, DateTime time, CancellationToken cancellationToken);
 }

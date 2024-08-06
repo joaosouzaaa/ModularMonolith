@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Appointment.DependencyInjection;
 
-public static class MigrationHandler
+internal static class MigrationHandler
 {
-    public static void MigrateDatabase(this IApplicationBuilder app)
+    internal static void MigrateDatabase(this IApplicationBuilder app)
     {
         using var scope = app.ApplicationServices.CreateScope();
 

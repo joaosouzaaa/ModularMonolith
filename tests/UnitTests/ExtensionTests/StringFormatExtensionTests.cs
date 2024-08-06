@@ -1,13 +1,14 @@
-﻿using Appointment.Domain.Extensions;
+﻿using ModularMonolith.Common.Extensions;
 
-namespace UnitTests.ExtensionTests.Appointment;
+namespace UnitTests.ExtensionTests;
+
 public sealed class StringFormatExtensionTests
 {
     [Fact]
-    public void FormatTo_ReturnsFormatedString()
+    public void FormatTo_SuccessfulScenario_ReturnsFormatedString()
     {
         // A
-        var stringToFormat = "{0} meu nome é {1}";
+        const string stringToFormat = "{0} meu nome é {1}";
 
         // A
         var formattedString = stringToFormat.FormatTo("oi", "joao");
