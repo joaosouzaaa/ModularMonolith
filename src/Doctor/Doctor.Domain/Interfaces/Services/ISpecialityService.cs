@@ -4,7 +4,7 @@ namespace Doctor.Domain.Interfaces.Services;
 
 public interface ISpecialityService
 {
-    Task<bool> AddAsync(SpecialitySave specialitySave);
-    Task<bool> DeleteAsync(int id);
-    Task<List<SpecialityResponse>> GetAllAsync();
+    Task<bool> AddAsync(SpecialitySave specialitySave, CancellationToken cancellationToken);
+    Task<bool> DeleteAsync(int id, CancellationToken cancellationToken);
+    Task<List<SpecialityResponse>> GetAllAsync(CancellationToken cancellationToken);
 }

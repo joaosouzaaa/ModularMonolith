@@ -5,8 +5,8 @@ namespace Doctor.Domain.Interfaces.Services;
 
 public interface IDoctorAttendantService
 {
-    Task<bool> AddAsync(DoctorAttendantSave doctorAttendantSave);
-    Task<bool> UpdateAsync(DoctorAttendantUpdate doctorAttendantUpdate);
-    Task<PageList<DoctorAttendantResponse>> GetAllFilteredAndPaginatedAsync(DoctorGetAllFilterRequest filterRequest);
-    Task<DoctorAttendantResponse?> GetByIdAsync(int id);
+    Task<bool> AddAsync(DoctorAttendantSave doctorAttendantSave, CancellationToken cancellationToken);
+    Task<PageList<DoctorAttendantResponse>> GetAllFilteredAndPaginatedAsync(DoctorGetAllFilterRequest filterRequest, CancellationToken cancellationToken);
+    Task<DoctorAttendantResponse?> GetByIdAsync(int id, CancellationToken cancellationToken);
+    Task<bool> UpdateAsync(DoctorAttendantUpdate doctorAttendantUpdate, CancellationToken cancellationToken);
 }

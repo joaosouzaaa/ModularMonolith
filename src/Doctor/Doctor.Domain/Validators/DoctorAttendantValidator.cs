@@ -1,17 +1,18 @@
 ﻿using Doctor.Domain.Entities;
 using Doctor.Domain.Enums;
-using Doctor.Domain.Extensions;
 using FluentValidation;
+using ModularMonolith.Common.Extensions;
 
 namespace Doctor.Domain.Validators;
 
 public sealed class DoctorAttendantValidator : AbstractValidator<DoctorAttendant>
 {
-    public DoctorAttendantValidator()
+    public DoctorAttendantValidator(IValidator<Certification> certificationValidator)
     {
-        RuleFor(d => d.Certification).SetValidator(new CertificationValidator());
+        RuleFor(d => d.Certification).SetValidator(certificationValidator);
 
-        RuleFor(d => d.Name).NotEmpty()
+        RuleFor(d => d.Name)
+            .NotEmpty()
             .Length(1, 100)
             .WithMessage(EMessage.InvalidLength.Description().FormatTo("Name", "1 to 100"));
 

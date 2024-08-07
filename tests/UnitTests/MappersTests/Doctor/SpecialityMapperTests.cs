@@ -3,6 +3,7 @@ using Doctor.Domain.Entities;
 using UnitTests.TestBuilders.Doctor;
 
 namespace UnitTests.MappersTests.Doctor;
+
 public sealed class SpecialityMapperTests
 {
     private readonly SpecialityMapper _specialityMapper;
@@ -10,19 +11,6 @@ public sealed class SpecialityMapperTests
     public SpecialityMapperTests()
     {
         _specialityMapper = new SpecialityMapper();
-    }
-
-    [Fact]
-    public void SaveToDomain_SuccessfulScenario()
-    {
-        // A
-        var specialitySave = SpecialityBuilder.NewObject().SaveBuild();
-
-        // A
-        var specialityResult = _specialityMapper.SaveToDomain(specialitySave);
-
-        // A
-        Assert.Equal(specialityResult.Name, specialitySave.Name);
     }
 
     [Fact]
@@ -37,9 +25,22 @@ public sealed class SpecialityMapperTests
         };
 
         // A
-        var specialityResponseListResult = _specialityMapper.DomainLisToResponseList(specialityList);
+        var specialityResponseListResult = _specialityMapper.DomainListToResponseList(specialityList);
 
         // A
         Assert.Equal(specialityResponseListResult.Count, specialityList.Count);
+    }
+
+    [Fact]
+    public void SaveToDomain_SuccessfulScenario()
+    {
+        // A
+        var specialitySave = SpecialityBuilder.NewObject().SaveBuild();
+
+        // A
+        var specialityResult = _specialityMapper.SaveToDomain(specialitySave);
+
+        // A
+        Assert.Equal(specialityResult.Name, specialitySave.Name);
     }
 }

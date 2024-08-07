@@ -2,12 +2,11 @@
 using Doctor.Domain.DataTransferObjects.DoctorAttendant;
 using Doctor.Domain.Entities;
 using Doctor.Domain.Enums;
-using Doctor.Domain.Extensions;
 using Doctor.Domain.Interfaces.Mappers;
 using Doctor.Domain.Interfaces.Repositories;
 using Doctor.Domain.Interfaces.Services;
 using FluentValidation;
-using ModularMonolith.Common.Interfaces;
+using ModularMonolith.Common.Extensions;
 using ModularMonolith.Common.Interfaces.Settings;
 using ModularMonolith.Common.Settings.PaginationSettings;
 
@@ -20,13 +19,13 @@ public sealed class DoctorAttendantService : BaseService<DoctorAttendant>, IDoct
     private readonly ISpecialityServiceFacade _specialityServiceFacade;
 
     public DoctorAttendantService(
-        IDoctorAttendantRepository doctorAttendantRepository, 
+        IDoctorAttendantRepository doctorAttendantRepository,
         IDoctorAttendantMapper doctorAttendantMapper,
-        ISpecialityServiceFacade specialityServiceFacade, 
-        INotificationHandler notificationHandler, 
-        IValidator<DoctorAttendant> validator) 
+        ISpecialityServiceFacade specialityServiceFacade,
+        INotificationHandler notificationHandler,
+        IValidator<DoctorAttendant> validator)
         : base(
-            notificationHandler, 
+            notificationHandler,
             validator)
     {
         _doctorAttendantRepository = doctorAttendantRepository;
@@ -34,26 +33,26 @@ public sealed class DoctorAttendantService : BaseService<DoctorAttendant>, IDoct
         _specialityServiceFacade = specialityServiceFacade;
     }
 
-    public async Task<bool> AddAsync(DoctorAttendantSave doctorAttendantSave)
+    public async Task<bool> AddAsync(DoctorAttendantSave doctorAttendantSave, CancellationToken cancellationToken)
     {
         var doctorAttendant = _doctorAttendantMapper.SaveToDomain(doctorAttendantSave);
 
-        if (!await AddSpecialityRelationshipAsync(doctorAttendantSave.SpecialityIds, doctorAttendant.Specialities))
+        if (!await AddSpecialityRelationshipAsync(doctorAttendantSave.SpecialityIds, doctorAttendant, cancellationToken))
         {
             return false;
         }
 
-        if (!await ValidateAsync(doctorAttendant))
+        if (!await IsValidAsync(doctorAttendant, cancellationToken))
         {
             return false;
         }
 
-        return await _doctorAttendantRepository.AddAsync(doctorAttendant);
+        return await _doctorAttendantRepository.AddAsync(doctorAttendant, cancellationToken);
     }
 
-    public async Task<bool> UpdateAsync(DoctorAttendantUpdate doctorAttendantUpdate)
+    public async Task<bool> UpdateAsync(DoctorAttendantUpdate doctorAttendantUpdate, CancellationToken cancellationToken)
     {
-        var doctorAttendant = await _doctorAttendantRepository.GetByIdAsync(doctorAttendantUpdate.Id, false);
+        var doctorAttendant = await _doctorAttendantRepository.GetByIdAsync(doctorAttendantUpdate.Id, false, cancellationToken);
 
         if (doctorAttendant is null)
         {
@@ -62,30 +61,33 @@ public sealed class DoctorAttendantService : BaseService<DoctorAttendant>, IDoct
             return false;
         }
 
-        doctorAttendant.Specialities.Clear();
-        if (!await AddSpecialityRelationshipAsync(doctorAttendantUpdate.SpecialityIds, doctorAttendant.Specialities))
+        if (!await AddSpecialityRelationshipAsync(doctorAttendantUpdate.SpecialityIds, doctorAttendant, cancellationToken))
+        {
             return false;
+        }
 
         _doctorAttendantMapper.UpdateToDomain(doctorAttendantUpdate, doctorAttendant);
 
-        if (!await ValidateAsync(doctorAttendant))
+        if (!await IsValidAsync(doctorAttendant, cancellationToken))
+        {
             return false;
+        }
 
-        return await _doctorAttendantRepository.UpdateAsync(doctorAttendant);
+        return await _doctorAttendantRepository.UpdateAsync(doctorAttendant, cancellationToken);
     }
 
-    public async Task<PageList<DoctorAttendantResponse>> GetAllFilteredAndPaginatedAsync(DoctorGetAllFilterRequest filterRequest)
+    public async Task<PageList<DoctorAttendantResponse>> GetAllFilteredAndPaginatedAsync(DoctorGetAllFilterRequest filterRequest, CancellationToken cancellationToken)
     {
         var getAllFilterArgument = _doctorAttendantMapper.FilterRequestToArgumentDomain(filterRequest);
 
-        var doctorPageList = await _doctorAttendantRepository.GetAllFilteredAndPaginatedAsync(getAllFilterArgument);
+        var doctorPageList = await _doctorAttendantRepository.GetAllFilteredAndPaginatedAsync(getAllFilterArgument, cancellationToken);
 
         return _doctorAttendantMapper.DomainPageListToResponsePageList(doctorPageList);
     }
 
-    public async Task<DoctorAttendantResponse?> GetByIdAsync(int id)
+    public async Task<DoctorAttendantResponse?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
-        var doctorAttendant = await _doctorAttendantRepository.GetByIdAsync(id, true);
+        var doctorAttendant = await _doctorAttendantRepository.GetByIdAsync(id, true, cancellationToken);
 
         if (doctorAttendant is null)
         {
@@ -95,21 +97,18 @@ public sealed class DoctorAttendantService : BaseService<DoctorAttendant>, IDoct
         return _doctorAttendantMapper.DomainToResponse(doctorAttendant);
     }
 
-    private async Task<bool> AddSpecialityRelationshipAsync(List<int> specialityIdList, List<Speciality> specialityList)
+    private async Task<bool> AddSpecialityRelationshipAsync(List<int> specialityRequestIdList, DoctorAttendant doctorAttendant, CancellationToken cancellationToken)
     {
-        foreach (var specialityId in specialityIdList)
+        var specialityList = await _specialityServiceFacade.GetAllByIdListAsync(specialityRequestIdList, cancellationToken);
+
+        if(specialityList.Count != specialityRequestIdList.Count)
         {
-            var speciality = await _specialityServiceFacade.GetByIdReturnsDomainObjectAsync(specialityId);
+            _notificationHandler.AddNotification(nameof(EMessage.NotFound), EMessage.NotFound.Description().FormatTo("Specialities"));
 
-            if (speciality is null)
-            {
-                _notificationHandler.AddNotification(nameof(EMessage.NotFound), EMessage.NotFound.Description().FormatTo("Speciality"));
-
-                return false;
-            }
-
-            specialityList.Add(speciality);
+            return false;
         }
+
+        doctorAttendant.Specialities = specialityList;
 
         return true;
     }

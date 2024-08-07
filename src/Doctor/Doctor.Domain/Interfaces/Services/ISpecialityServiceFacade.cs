@@ -4,5 +4,5 @@ namespace Doctor.Domain.Interfaces.Services;
 
 public interface ISpecialityServiceFacade
 {
-    Task<Speciality?> GetByIdReturnsDomainObjectAsync(int id);
+    Task<List<Speciality>> GetAllByIdListAsync(List<int> idList, CancellationToken cancellationToken);
 }

@@ -6,6 +6,10 @@ namespace Doctor.ApplicationService.Mappers;
 
 public sealed class CertificationMapper : ICertificationMapper
 {
+    public CertificationResponse DomainToResponse(Certification certification) =>
+        new(certification.Id,
+            certification.LicenseNumber);
+
     public Certification RequestToDomainCreate(CertificationRequest certificationRequest) =>
         new()
         {
@@ -14,11 +18,4 @@ public sealed class CertificationMapper : ICertificationMapper
 
     public void RequestToDomainUpdate(CertificationRequest certificationRequest, Certification certification) =>
         certification.LicenseNumber = certificationRequest.LicenseNumber;
-
-    public CertificationResponse DomainToResponse(Certification certification) =>
-        new()
-        {
-            Id = certification.Id,
-            LicenseNumber = certification.LicenseNumber
-        };
 }

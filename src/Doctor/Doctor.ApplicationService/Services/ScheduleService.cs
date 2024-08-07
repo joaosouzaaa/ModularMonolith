@@ -6,14 +6,14 @@ using Doctor.Domain.Interfaces.Services;
 namespace Doctor.ApplicationService.Services;
 
 public sealed class ScheduleService(
-    IScheduleRepository scheduleRepository, 
-    IScheduleMapper scheduleMapper) 
+    IScheduleRepository scheduleRepository,
+    IScheduleMapper scheduleMapper)
     : IScheduleService
 {
-    public async Task AddAsync(AppointmentTimeCreatedEvent appointmentTimeCreatedEvent)
+    public Task AddAsync(AppointmentTimeCreatedEvent appointmentTimeCreatedEvent, CancellationToken cancellationToken)
     {
         var schedule = scheduleMapper.AppointmentTimeCreatedEventToDomain(appointmentTimeCreatedEvent);
 
-        await scheduleRepository.AddAsync(schedule);
+        return scheduleRepository.AddAsync(schedule, cancellationToken);
     }
 }

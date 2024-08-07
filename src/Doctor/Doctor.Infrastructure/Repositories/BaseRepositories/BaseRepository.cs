@@ -19,6 +19,6 @@ public abstract class BaseRepository<TEntity> : IDisposable
         GC.SuppressFinalize(this);
     }
 
-    protected async Task<bool> SaveChangesAsync() =>
-        await _dbContext.SaveChangesAsync() > 0;
+    protected async Task<bool> SaveChangesAsync(CancellationToken cancellationToken) =>
+        await _dbContext.SaveChangesAsync(cancellationToken) > 0;
 }

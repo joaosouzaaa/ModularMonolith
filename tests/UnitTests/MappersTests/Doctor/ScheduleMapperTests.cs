@@ -3,6 +3,7 @@ using Doctor.Domain.Entities;
 using UnitTests.TestBuilders.Doctor;
 
 namespace UnitTests.MappersTests.Doctor;
+
 public sealed class ScheduleMapperTests
 {
     private readonly ScheduleMapper _scheduleMapper;
@@ -10,6 +11,20 @@ public sealed class ScheduleMapperTests
     public ScheduleMapperTests()
     {
         _scheduleMapper = new ScheduleMapper();
+    }
+
+    [Fact]
+    public void AppointmentTimeCreatedEventToDomain_SuccessfulScenario()
+    {
+        // A
+        var appointmentTimeCreatedEvent = ContractsBuilder.NewObject().AppointmentTimeCreatedEventBuild();
+
+        // A
+        var scheduleResult = _scheduleMapper.AppointmentTimeCreatedEventToDomain(appointmentTimeCreatedEvent);
+
+        // A
+        Assert.Equal(scheduleResult.DoctorAttendantId, appointmentTimeCreatedEvent.DoctorAttendantId);
+        Assert.Equal(scheduleResult.Time, appointmentTimeCreatedEvent.Time);
     }
 
     [Fact]
@@ -26,19 +41,5 @@ public sealed class ScheduleMapperTests
 
         // A
         Assert.Equal(scheduleResponseListResult.Count, scheduleList.Count);
-    }
-
-    [Fact]
-    public void AppointmentTimeCreatedEventToDomain_SuccessfulScenario()
-    {
-        // A
-        var appointmentTimeCreatedEvent = ContractsBuilder.NewObject().AppointmentTimeCreatedEventBuild();
-
-        // A
-        var scheduleResult = _scheduleMapper.AppointmentTimeCreatedEventToDomain(appointmentTimeCreatedEvent);
-
-        // A
-        Assert.Equal(scheduleResult.DoctorAttendantId, appointmentTimeCreatedEvent.DoctorAttendantId);
-        Assert.Equal(scheduleResult.Time, appointmentTimeCreatedEvent.Time);
     }
 }

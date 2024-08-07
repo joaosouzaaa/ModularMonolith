@@ -29,7 +29,7 @@ internal sealed class DoctorAttendantMapping : IEntityTypeConfiguration<DoctorAt
             .HasColumnType("date");
 
         builder.HasOne(d => d.Certification)
-            .WithOne()
+            .WithOne(c => c.DoctorAttendant)
             .HasForeignKey<DoctorAttendant>(d => d.CertificationId)
             .OnDelete(DeleteBehavior.Cascade);
 

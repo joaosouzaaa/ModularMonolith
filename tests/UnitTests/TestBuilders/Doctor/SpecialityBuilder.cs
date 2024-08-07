@@ -2,6 +2,7 @@
 using Doctor.Domain.Entities;
 
 namespace UnitTests.TestBuilders.Doctor;
+
 public sealed class SpecialityBuilder
 {
     private readonly int _id = 12;
@@ -21,11 +22,8 @@ public sealed class SpecialityBuilder
         new(_name);
 
     public SpecialityResponse ResponseBuild() =>
-        new()
-        {
-            Id = _id,
-            Name = _name
-        };
+        new(_id,
+            _name);
 
     public SpecialityBuilder WithName(string name)
     {

@@ -8,52 +8,51 @@ using ModularMonolith.Common.Settings.PaginationSettings;
 
 namespace Doctor.Infrastructure.Repositories;
 
-public sealed class DoctorAttendantRepository : BaseRepository<DoctorAttendant>, IDoctorAttendantRepository
+public sealed class DoctorAttendantRepository(DoctorDbContext dbContext) : BaseRepository<DoctorAttendant>(dbContext), IDoctorAttendantRepository
 {
-    public DoctorAttendantRepository(DoctorDbContext dbContext) : base(dbContext)
+    public async Task<bool> AddAsync(DoctorAttendant doctorAttendant, CancellationToken cancellationToken)
     {
+        await DbContextSet.AddAsync(doctorAttendant, cancellationToken);
 
+        return await SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<bool> AddAsync(DoctorAttendant doctorAttendant)
+    public Task<PageList<DoctorAttendant>> GetAllFilteredAndPaginatedAsync(DoctorGetAllFilterArgument filter, CancellationToken cancellationToken)
     {
-        await DbContextSet.AddAsync(doctorAttendant);
+        var query = DbContextSet
+            .Include(d => d.Certification)
+            .Include(d => d.Specialities)
+            .Include(d => d.Schedules)
+            .Where(d => d.Specialities.Any(s => filter.SpecialityIds.Contains(s.Id)))
+            .Where(d => filter.InitialTime == null ||
+            d.Schedules.Any(s => s.Time >= filter.InitialTime))
+            .Where(d => filter.FinalTime == null ||
+            d.Schedules.Any(s => s.Time <= filter.FinalTime));
 
-        return await SaveChangesAsync();
+        return query.PaginateAsync(filter, cancellationToken);
     }
 
-    public Task<bool> UpdateAsync(DoctorAttendant doctorAttendant)
-    {
-        _dbContext.Entry(doctorAttendant.Certification).State = EntityState.Modified;
-        _dbContext.Entry(doctorAttendant).State = EntityState.Modified;
-
-        return SaveChangesAsync();
-    }
-
-    public Task<PageList<DoctorAttendant>> GetAllFilteredAndPaginatedAsync(DoctorGetAllFilterArgument filter)
-    {
-        var query = DbContextSet.Include(d => d.Certification)
-                                .Include(d => d.Specialities)
-                                .Include(d => d.Schedules)
-                                .Where(d => d.Specialities.Any(s => filter.SpecialityIds.Contains(s.Id)))
-                                .Where(d => filter.InitialTime == null
-                                || d.Schedules.Any(s => s.Time >= filter.InitialTime))
-                                .Where(d => filter.FinalTime == null
-                                || d.Schedules.Any(s => s.Time <= filter.FinalTime));
-
-        return query.PaginateAsync(filter);
-    }
-
-    public Task<DoctorAttendant?> GetByIdAsync(int id, bool asNoTracking)
+    public Task<DoctorAttendant?> GetByIdAsync(int id, bool asNoTracking, CancellationToken cancellationToken)
     {
         var query = (IQueryable<DoctorAttendant>)DbContextSet;
 
         if (asNoTracking)
+        {
             query = DbContextSet.AsNoTracking();
+        }
 
-        return DbContextSet.Include(d => d.Certification)
-                           .Include(d => d.Specialities)
-                           .Include(d => d.Schedules)
-                           .FirstOrDefaultAsync(d => d.Id == id);
+        return DbContextSet
+            .Include(d => d.Certification)
+            .Include(d => d.Specialities)
+            .Include(d => d.Schedules)
+            .FirstOrDefaultAsync(d => d.Id == id, cancellationToken);
+    }
+
+    public Task<bool> UpdateAsync(DoctorAttendant doctorAttendant, CancellationToken cancellationToken)
+    {
+        _dbContext.Entry(doctorAttendant.Certification).State = EntityState.Modified;
+        _dbContext.Entry(doctorAttendant).State = EntityState.Modified;
+
+        return SaveChangesAsync(cancellationToken);
     }
 }

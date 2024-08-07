@@ -9,6 +9,6 @@ public sealed class DoctorAttendant
 
     public int CertificationId { get; set; }
     public Certification Certification { get; set; } = null!;
-    public List<Schedule> Schedules { get; set; } = null!;
-    public List<Speciality> Specialities { get; set; } = null!;
+    public List<Schedule> Schedules { get; set; } = [];
+    public List<Speciality> Specialities { get; set; } = [];
 }

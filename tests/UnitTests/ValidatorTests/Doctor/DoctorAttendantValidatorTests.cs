@@ -1,14 +1,20 @@
-﻿using Doctor.Domain.Validators;
+﻿using Doctor.Domain.Entities;
+using Doctor.Domain.Validators;
+using FluentValidation;
+using Moq;
 using UnitTests.TestBuilders.Doctor;
 
 namespace UnitTests.ValidatorTests.Doctor;
+
 public sealed class DoctorAttendantValidatorTests
 {
+    private readonly Mock<IValidator<Certification>> _certificationValidatorMock;
     private readonly DoctorAttendantValidator _doctorAttendantValidator;
 
     public DoctorAttendantValidatorTests()
     {
-        _doctorAttendantValidator = new DoctorAttendantValidator();
+        _certificationValidatorMock = new Mock<IValidator<Certification>>();
+        _doctorAttendantValidator = new DoctorAttendantValidator(_certificationValidatorMock.Object);
     }
 
     [Fact]
@@ -22,20 +28,6 @@ public sealed class DoctorAttendantValidatorTests
 
         // A
         Assert.True(validationResult.IsValid);
-    }
-
-    [Fact]
-    public async Task ValidateAsync_InvalidCertification_ReturnsFalse()
-    {
-        // A
-        var invalidCertification = CertificationBuilder.NewObject().WithLicenseNumber("a").DomainBuild();
-        var doctorAttendantWithInvalidCertification = DoctorAttendantBuilder.NewObject().WithCertification(invalidCertification).DomainBuild();
-
-        // A
-        var validationResult = await _doctorAttendantValidator.ValidateAsync(doctorAttendantWithInvalidCertification);
-
-        // A
-        Assert.False(validationResult.IsValid);
     }
 
     [Theory]
@@ -52,18 +44,12 @@ public sealed class DoctorAttendantValidatorTests
         Assert.False(validationResult.IsValid);
     }
 
-    public static IEnumerable<object[]> InvalidNameParameters()
-    {
-        yield return new object[]
+    public static TheoryData<string> InvalidNameParameters() =>
+        new()
         {
-            ""
+            "",
+            new string('a', 102)
         };
-
-        yield return new object[]
-        {
-            new string('a', count: 102)
-        };
-    }
 
     [Theory]
     [InlineData(0)]
@@ -87,7 +73,7 @@ public sealed class DoctorAttendantValidatorTests
     {
         // A
         var doctorAttendantWithInvalidBirthDate = DoctorAttendantBuilder.NewObject().WithBirthDate(birthDate).DomainBuild();
-
+        var rn = new DateOnly(DateTime.Now.AddYears(-200).Year, 01, 01);
         // A
         var validationResult = await _doctorAttendantValidator.ValidateAsync(doctorAttendantWithInvalidBirthDate);
 
@@ -95,11 +81,9 @@ public sealed class DoctorAttendantValidatorTests
         Assert.False(validationResult.IsValid);
     }
 
-    public static IEnumerable<object[]> InvalidBirthDateParameters()
-    {
-        yield return new object[]
+    public static TheoryData<DateOnly> InvalidBirthDateParameters() =>
+        new()
         {
             new DateOnly(DateTime.Now.AddYears(-200).Year, 01, 01)
         };
-    }
 }

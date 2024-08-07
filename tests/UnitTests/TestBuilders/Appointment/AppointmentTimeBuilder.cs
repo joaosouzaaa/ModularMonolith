@@ -3,6 +3,7 @@ using Appointment.Domain.DataTransferObjects.Appointment;
 using Appointment.Domain.Entities;
 
 namespace UnitTests.TestBuilders.Appointment;
+
 public sealed class AppointmentTimeBuilder
 {
     private int _doctorAttendantId = 123;
@@ -22,7 +23,7 @@ public sealed class AppointmentTimeBuilder
         };
 
     public AppointmentTimeSave SaveBuild() =>
-        new(_time, 
+        new(_time,
             _doctorAttendantId,
             _patientClientId);
 

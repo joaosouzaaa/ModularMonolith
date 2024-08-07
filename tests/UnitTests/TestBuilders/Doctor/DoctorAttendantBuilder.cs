@@ -3,6 +3,7 @@ using Doctor.Domain.DataTransferObjects.DoctorAttendant;
 using Doctor.Domain.Entities;
 
 namespace UnitTests.TestBuilders.Doctor;
+
 public sealed class DoctorAttendantBuilder
 {
     private readonly int _id = 123;
@@ -17,7 +18,7 @@ public sealed class DoctorAttendantBuilder
     private readonly int _pageNumber = 123;
     private readonly int _pageSize = 123;
     private List<int> _specialityIdList = [];
-    private DateTime _birthDateRequest = DateTime.Now;
+    private readonly DateTime _birthDateRequest = DateTime.Now;
 
     public static DoctorAttendantBuilder NewObject() =>
         new();
@@ -71,16 +72,13 @@ public sealed class DoctorAttendantBuilder
         };
 
     public DoctorAttendantResponse ResponseBuild() =>
-        new()
-        {
-            BirthDate = _birthDate,
-            Certification = CertificationBuilder.NewObject().ResponseBuild(),
-            ExperienceYears = _experienceYears,
-            Id = _id,
-            Name = _name,
-            Schedules = [],
-            Specialities = []
-        };
+        new(_id,
+            _name,
+            _experienceYears,
+            _birthDate,
+            CertificationBuilder.NewObject().ResponseBuild(),
+            [],
+            []);
 
     public DoctorAttendantBuilder WithBirthDate(DateOnly birthDate)
     {

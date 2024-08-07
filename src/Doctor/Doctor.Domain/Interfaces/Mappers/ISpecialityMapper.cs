@@ -5,6 +5,6 @@ namespace Doctor.Domain.Interfaces.Mappers;
 
 public interface ISpecialityMapper
 {
+    List<SpecialityResponse> DomainListToResponseList(List<Speciality> specialityList);
     Speciality SaveToDomain(SpecialitySave specialitySave);
-    List<SpecialityResponse> DomainLisToResponseList(List<Speciality> specialityList);
 }

@@ -1,4 +1,4 @@
-﻿using Doctor.ApplicationService.Consumers;
+﻿using Doctor.Infrastructure.Consumers;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Doctor.DependencyInjection;

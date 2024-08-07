@@ -2,11 +2,11 @@
 using Doctor.Domain.DataTransferObjects.Speciality;
 using Doctor.Domain.Entities;
 using Doctor.Domain.Enums;
-using Doctor.Domain.Extensions;
 using Doctor.Domain.Interfaces.Mappers;
 using Doctor.Domain.Interfaces.Repositories;
 using Doctor.Domain.Interfaces.Services;
 using FluentValidation;
+using ModularMonolith.Common.Extensions;
 using ModularMonolith.Common.Interfaces.Settings;
 
 namespace Doctor.ApplicationService.Services;
@@ -32,37 +32,37 @@ public sealed class SpecialityService
         _specialityMapper = specialityMapper;
     }
 
-    public async Task<bool> AddAsync(SpecialitySave specialitySave)
+    public async Task<bool> AddAsync(SpecialitySave specialitySave, CancellationToken cancellationToken)
     {
         var speciality = _specialityMapper.SaveToDomain(specialitySave);
 
-        if (!await ValidateAsync(speciality))
+        if (!await IsValidAsync(speciality, cancellationToken))
         {
             return false;
         }
 
-        return await _specialityRepository.AddAsync(speciality);
+        return await _specialityRepository.AddAsync(speciality, cancellationToken);
     }
 
-    public async Task<bool> DeleteAsync(int id)
+    public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
     {
-        if (!await _specialityRepository.ExistsAsync(id))
+        if (!await _specialityRepository.ExistsAsync(id, cancellationToken))
         {
             _notificationHandler.AddNotification(nameof(EMessage.NotFound), EMessage.NotFound.Description().FormatTo("Speciality"));
 
             return false;
         }
 
-        return await _specialityRepository.DeleteAsync(id);
+        return await _specialityRepository.DeleteAsync(id, cancellationToken);
     }
 
-    public async Task<List<SpecialityResponse>> GetAllAsync()
+    public async Task<List<SpecialityResponse>> GetAllAsync(CancellationToken cancellationToken)
     {
-        var specialityList = await _specialityRepository.GetAllAsync();
+        var specialityList = await _specialityRepository.GetAllAsync(cancellationToken);
 
-        return _specialityMapper.DomainLisToResponseList(specialityList);
+        return _specialityMapper.DomainListToResponseList(specialityList);
     }
 
-    public Task<Speciality?> GetByIdReturnsDomainObjectAsync(int id) =>
-        _specialityRepository.GetByIdAsync(id);
+    public Task<List<Speciality>> GetAllByIdListAsync(List<int> idList, CancellationToken cancellationToken) =>
+        _specialityRepository.GetAllAsync(idList, cancellationToken);
 }

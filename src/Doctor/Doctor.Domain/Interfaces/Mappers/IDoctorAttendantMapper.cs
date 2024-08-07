@@ -7,9 +7,9 @@ namespace Doctor.Domain.Interfaces.Mappers;
 
 public interface IDoctorAttendantMapper
 {
-    DoctorAttendant SaveToDomain(DoctorAttendantSave doctorAttendantSave);
-    void UpdateToDomain(DoctorAttendantUpdate doctorAttendantUpdate, DoctorAttendant doctorAttendant);
+    PageList<DoctorAttendantResponse> DomainPageListToResponsePageList(PageList<DoctorAttendant> doctorAttendantPageList);
     DoctorAttendantResponse DomainToResponse(DoctorAttendant doctorAttendant);
     DoctorGetAllFilterArgument FilterRequestToArgumentDomain(DoctorGetAllFilterRequest doctorGetAllFilterRequest);
-    PageList<DoctorAttendantResponse> DomainPageListToResponsePageList(PageList<DoctorAttendant> doctorAttendantPageList);
+    DoctorAttendant SaveToDomain(DoctorAttendantSave doctorAttendantSave);
+    void UpdateToDomain(DoctorAttendantUpdate doctorAttendantUpdate, DoctorAttendant doctorAttendant);
 }

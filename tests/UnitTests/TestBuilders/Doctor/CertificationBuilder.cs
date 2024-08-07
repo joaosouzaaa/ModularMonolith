@@ -2,6 +2,7 @@
 using Doctor.Domain.Entities;
 
 namespace UnitTests.TestBuilders.Doctor;
+
 public sealed class CertificationBuilder
 {
     private readonly int _id = 123;
@@ -21,11 +22,8 @@ public sealed class CertificationBuilder
         new(_licenseNumber);
 
     public CertificationResponse ResponseBuild() =>
-        new()
-        {
-            Id = _id,
-            LicenseNumber = _licenseNumber
-        };
+        new(_id,
+            _licenseNumber);
 
     public CertificationBuilder WithLicenseNumber(string licenseNumber)
     {

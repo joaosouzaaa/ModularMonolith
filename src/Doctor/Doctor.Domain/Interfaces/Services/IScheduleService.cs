@@ -4,5 +4,5 @@ namespace Doctor.Domain.Interfaces.Services;
 
 public interface IScheduleService
 {
-    Task AddAsync(AppointmentTimeCreatedEvent appointmentTimeCreatedEvent);
+    Task AddAsync(AppointmentTimeCreatedEvent appointmentTimeCreatedEvent, CancellationToken cancellationToken);
 }

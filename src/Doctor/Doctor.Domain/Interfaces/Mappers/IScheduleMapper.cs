@@ -6,6 +6,6 @@ namespace Doctor.Domain.Interfaces.Mappers;
 
 public interface IScheduleMapper
 {
-    List<ScheduleResponse> DomainListToResponseList(List<Schedule> scheduleList);
     Schedule AppointmentTimeCreatedEventToDomain(AppointmentTimeCreatedEvent appointmentTimeCreatedEvent);
+    List<ScheduleResponse> DomainListToResponseList(List<Schedule> scheduleList);
 }

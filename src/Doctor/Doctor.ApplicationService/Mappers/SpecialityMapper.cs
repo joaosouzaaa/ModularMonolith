@@ -6,19 +6,16 @@ namespace Doctor.ApplicationService.Mappers;
 
 public sealed class SpecialityMapper : ISpecialityMapper
 {
+    public List<SpecialityResponse> DomainListToResponseList(List<Speciality> specialityList) =>
+        specialityList.Select(DomainToResponse).ToList();
+
     public Speciality SaveToDomain(SpecialitySave specialitySave) =>
         new()
         {
             Name = specialitySave.Name
         };
 
-    public List<SpecialityResponse> DomainLisToResponseList(List<Speciality> specialityList) =>
-        specialityList.Select(DomainToResponse).ToList();
-
-    private SpecialityResponse DomainToResponse(Speciality speciality) =>
-        new()
-        {
-            Id = speciality.Id,
-            Name = speciality.Name
-        };
+    private static SpecialityResponse DomainToResponse(Speciality speciality) =>
+        new(speciality.Id,
+            speciality.Name);
 }

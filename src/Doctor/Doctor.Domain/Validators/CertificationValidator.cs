@@ -1,7 +1,7 @@
 ﻿using Doctor.Domain.Entities;
 using Doctor.Domain.Enums;
-using Doctor.Domain.Extensions;
 using FluentValidation;
+using ModularMonolith.Common.Extensions;
 
 namespace Doctor.Domain.Validators;
 

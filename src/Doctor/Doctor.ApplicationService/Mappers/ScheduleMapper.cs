@@ -7,9 +7,6 @@ namespace Doctor.ApplicationService.Mappers;
 
 public sealed class ScheduleMapper : IScheduleMapper
 {
-    public List<ScheduleResponse> DomainListToResponseList(List<Schedule> scheduleList) =>
-        scheduleList.Select(DomainToResponse).ToList();
-
     public Schedule AppointmentTimeCreatedEventToDomain(AppointmentTimeCreatedEvent appointmentTimeCreatedEvent) =>
         new()
         {
@@ -17,10 +14,10 @@ public sealed class ScheduleMapper : IScheduleMapper
             Time = appointmentTimeCreatedEvent.Time
         };
 
-    private ScheduleResponse DomainToResponse(Schedule schedule) =>
-        new()
-        {
-            Id = schedule.Id,
-            Time = schedule.Time
-        };
+    public List<ScheduleResponse> DomainListToResponseList(List<Schedule> scheduleList) =>
+        scheduleList.Select(DomainToResponse).ToList();
+
+    private static ScheduleResponse DomainToResponse(Schedule schedule) =>
+        new(schedule.Id,
+            schedule.Time);
 }

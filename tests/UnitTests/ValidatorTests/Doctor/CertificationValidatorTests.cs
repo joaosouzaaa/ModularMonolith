@@ -2,6 +2,7 @@
 using UnitTests.TestBuilders.Doctor;
 
 namespace UnitTests.ValidatorTests.Doctor;
+
 public sealed class CertificationValidatorTests
 {
     private readonly CertificationValidator _certificationValidator;

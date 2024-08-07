@@ -2,6 +2,7 @@
 using ModularMonolith.Common.Settings.NotificationSettings;
 
 namespace UnitTests.SettingsTests.Common;
+
 public sealed class NotificationHandlerTests
 {
     private readonly NotificationHandler _notificationHandler;

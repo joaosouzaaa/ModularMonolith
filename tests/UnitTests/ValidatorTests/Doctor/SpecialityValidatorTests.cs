@@ -2,6 +2,7 @@
 using UnitTests.TestBuilders.Doctor;
 
 namespace UnitTests.ValidatorTests.Doctor;
+
 public sealed class SpecialityValidatorTests
 {
     private readonly SpecialityValidator _specialityValidator;
@@ -38,16 +39,10 @@ public sealed class SpecialityValidatorTests
         Assert.False(validationResult.IsValid);
     }
 
-    public static IEnumerable<object[]> InvalidNameParameters()
-    {
-        yield return new object[]
+    public static TheoryData<string> InvalidNameParameters() =>
+        new()
         {
-            ""
+            "",
+            new string('a', 101)
         };
-
-        yield return new object[]
-        {
-            new string('a', count: 101)
-        };
-    }
 }

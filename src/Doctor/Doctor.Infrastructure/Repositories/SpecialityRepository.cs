@@ -7,32 +7,32 @@ using Microsoft.EntityFrameworkCore;
 namespace Doctor.Infrastructure.Repositories;
 
 public sealed class SpecialityRepository(
-    DoctorDbContext dbContext) 
-    : BaseRepository<Speciality>(dbContext), 
+    DoctorDbContext dbContext)
+    : BaseRepository<Speciality>(dbContext),
     ISpecialityRepository
 {
-    public async Task<bool> AddAsync(Speciality speciality)
+    public async Task<bool> AddAsync(Speciality speciality, CancellationToken cancellationToken)
     {
-        await DbContextSet.AddAsync(speciality);
+        await DbContextSet.AddAsync(speciality, cancellationToken);
 
-        return await SaveChangesAsync();
+        return await SaveChangesAsync(cancellationToken);
     }
 
-    public Task<bool> ExistsAsync(int id) =>
-        DbContextSet.AsNoTracking().AnyAsync(s => s.Id == id);
-
-    public async Task<bool> DeleteAsync(int id)
+    public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
     {
-        var speciality = await DbContextSet.FirstOrDefaultAsync(s => s.Id == id);
+        var speciality = await DbContextSet.FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
 
         DbContextSet.Remove(speciality!);
 
-        return await SaveChangesAsync();
+        return await SaveChangesAsync(cancellationToken);
     }
 
-    public Task<List<Speciality>> GetAllAsync() =>
-        DbContextSet.AsNoTracking().ToListAsync();
+    public Task<bool> ExistsAsync(int id, CancellationToken cancellationToken) =>
+        DbContextSet.AsNoTracking().AnyAsync(s => s.Id == id, cancellationToken);
 
-    public Task<Speciality?> GetByIdAsync(int id) =>
-        DbContextSet.FirstOrDefaultAsync(s => s.Id == id);
+    public Task<List<Speciality>> GetAllAsync(CancellationToken cancellationToken) =>
+        DbContextSet.AsNoTracking().ToListAsync(cancellationToken);
+
+    public Task<List<Speciality>> GetAllAsync(List<int> idList, CancellationToken cancellationToken) =>
+        DbContextSet.Where(s => idList.Contains(s.Id)).ToListAsync(cancellationToken);
 }

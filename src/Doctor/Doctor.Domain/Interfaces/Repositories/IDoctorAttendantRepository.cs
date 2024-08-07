@@ -6,8 +6,8 @@ namespace Doctor.Domain.Interfaces.Repositories;
 
 public interface IDoctorAttendantRepository
 {
-    Task<bool> AddAsync(DoctorAttendant doctorAttendant);
-    Task<bool> UpdateAsync(DoctorAttendant doctorAttendant);
-    Task<PageList<DoctorAttendant>> GetAllFilteredAndPaginatedAsync(DoctorGetAllFilterArgument filter);
-    Task<DoctorAttendant?> GetByIdAsync(int id, bool asNoTracking);
+    Task<bool> AddAsync(DoctorAttendant doctorAttendant, CancellationToken cancellationToken);
+    Task<PageList<DoctorAttendant>> GetAllFilteredAndPaginatedAsync(DoctorGetAllFilterArgument filter, CancellationToken cancellationToken);
+    Task<DoctorAttendant?> GetByIdAsync(int id, bool asNoTracking, CancellationToken cancellationToken);
+    Task<bool> UpdateAsync(DoctorAttendant doctorAttendant, CancellationToken cancellationToken);
 }

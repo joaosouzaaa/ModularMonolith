@@ -2,6 +2,7 @@
 using Doctor.Domain.Entities;
 
 namespace UnitTests.TestBuilders.Doctor;
+
 public sealed class ScheduleBuilder
 {
     private readonly int _id = 123;
@@ -19,9 +20,6 @@ public sealed class ScheduleBuilder
         };
 
     public ScheduleResponse ResponseBuild() =>
-        new()
-        {
-            Id = _id,
-            Time = _time
-        };
+        new(_id,
+            _time);
 }

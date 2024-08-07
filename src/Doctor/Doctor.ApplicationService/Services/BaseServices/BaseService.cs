@@ -17,9 +17,9 @@ public abstract class BaseService<TEntity>
         _validator = validator;
     }
 
-    protected async Task<bool> ValidateAsync(TEntity entity)
+    protected async Task<bool> IsValidAsync(TEntity entity, CancellationToken cancellationToken)
     {
-        var validationResult = await _validator.ValidateAsync(entity);
+        var validationResult = await _validator.ValidateAsync(entity, cancellationToken);
 
         if (validationResult.IsValid)
         {
