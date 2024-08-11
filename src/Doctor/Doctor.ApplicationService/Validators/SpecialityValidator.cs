@@ -3,7 +3,7 @@ using Doctor.Domain.Enums;
 using FluentValidation;
 using ModularMonolith.Common.Extensions;
 
-namespace Doctor.Domain.Validators;
+namespace Doctor.ApplicationService.Validators;
 
 public sealed class SpecialityValidator : AbstractValidator<Speciality>
 {

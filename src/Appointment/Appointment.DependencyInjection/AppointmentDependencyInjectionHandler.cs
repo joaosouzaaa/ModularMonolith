@@ -24,7 +24,7 @@ public static class AppointmentDependencyInjectionHandler
         services.AddMappersDependencyInjection();
         services.AddServicesDependencyInjection();
 
-        services.AddValidatorsFromAssembly(Domain.AssemblyReference.Assembly);
+        services.AddValidatorsFromAssembly(ApplicationService.AssemblyReference.Assembly);
     }
 
     public static void UseAppointmentDependencyInjection(this IApplicationBuilder app) =>

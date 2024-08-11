@@ -1,5 +1,5 @@
 ﻿namespace Doctor.Domain.DataTransferObjects.Certification;
 
 public sealed record CertificationResponse(
-    int Id, 
+    int Id,
     string LicenseNumber);

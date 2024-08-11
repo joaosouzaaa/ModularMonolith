@@ -18,7 +18,27 @@ public sealed class PatientClientMapperTests
     }
 
     [Fact]
-    public void SaveToDomain_SuccessfulScenario()
+    public void DomainToResponse_SuccessfulScenario_ReturnsResponseObject()
+    {
+        // A
+        var patientClient = PatientClientBuilder.NewObject().DomainBuild();
+
+        var contactInfoResponse = ContactInfoBuilder.NewObject().ResponseBuild();
+        _contactInfoMapperMock.Setup(c => c.DomainToResponse(It.IsAny<ContactInfo>()))
+            .Returns(contactInfoResponse);
+
+        // A
+        var patientClientResponseResult = _patientClientMapper.DomainToResponse(patientClient);
+
+        // A
+        Assert.Equal(patientClientResponseResult.Address, patientClient.Address);
+        Assert.Equal(patientClientResponseResult.Id, patientClient.Id);
+        Assert.Equal(patientClientResponseResult.Name, patientClient.Name);
+        Assert.NotNull(patientClientResponseResult.ContactInfo);
+    }
+
+    [Fact]
+    public void SaveToDomain_SuccessfulScenario_ReturnsDomainObject()
     {
         // A
         var patientClientSave = PatientClientBuilder.NewObject().SaveBuild();
@@ -37,40 +57,23 @@ public sealed class PatientClientMapperTests
     }
 
     [Fact]
-    public void UpdateToDomain_SuccessfulScenario()
+    public void UpdateToDomain_SuccessfulScenario_AssignPropertiesSuccessfully()
     {
         // A
         var patientClientUpdate = PatientClientBuilder.NewObject().UpdateBuild();
         var patientClientResult = PatientClientBuilder.NewObject().DomainBuild();
 
-        _contactInfoMapperMock.Setup(c => c.RequestToDomainUpdate(It.IsAny<ContactInfoRequest>(), It.IsAny<ContactInfo>()));
-
         // A
         _patientClientMapper.UpdateToDomain(patientClientUpdate, patientClientResult);
 
         // A
+        _contactInfoMapperMock.Verify(c => c.RequestToDomainUpdate(
+            It.IsAny<ContactInfoRequest>(),
+            It.IsAny<ContactInfo>()),
+            Times.Once());
+
         Assert.Equal(patientClientResult.Address, patientClientUpdate.Address);
         Assert.Equal(patientClientResult.Name, patientClientUpdate.Name);
         Assert.NotNull(patientClientResult.ContactInfo);
-    }
-
-    [Fact]
-    public void DomainToResponse_SuccessfulScenario()
-    {
-        // A
-        var patientClient = PatientClientBuilder.NewObject().DomainBuild();
-
-        var contactInfoResponse = ContactInfoBuilder.NewObject().ResponseBuild();
-        _contactInfoMapperMock.Setup(c => c.DomainToResponse(It.IsAny<ContactInfo>()))
-            .Returns(contactInfoResponse);
-
-        // A
-        var patientClientResponseResult = _patientClientMapper.DomainToResponse(patientClient);
-
-        // A
-        Assert.Equal(patientClientResponseResult.Address, patientClient.Address);
-        Assert.Equal(patientClientResponseResult.Id, patientClient.Id);
-        Assert.Equal(patientClientResponseResult.Name, patientClient.Name);
-        Assert.NotNull(patientClientResponseResult.ContactInfo);
     }
 }

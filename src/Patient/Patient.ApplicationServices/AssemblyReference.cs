@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace Patient.Domain;
+namespace Patient.ApplicationServices;
 
 public static class AssemblyReference
 {

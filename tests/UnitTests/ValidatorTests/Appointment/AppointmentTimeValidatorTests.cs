@@ -1,4 +1,4 @@
-﻿using Appointment.Domain.Validators;
+﻿using Appointment.ApplicationService.Validators;
 using UnitTests.TestBuilders.Appointment;
 
 namespace UnitTests.ValidatorTests.Appointment;

@@ -17,10 +17,5 @@ internal sealed class CertificationMapping : IEntityTypeConfiguration<Certificat
             .IsRequired(true)
             .HasColumnName("license_number")
             .HasColumnType("varchar(20)");
-
-        builder.HasOne(c => c.DoctorAttendant)
-           .WithOne(d => d.Certification)
-           .HasForeignKey<DoctorAttendant>(d => d.CertificationId)
-           .OnDelete(DeleteBehavior.Cascade);
     }
 }

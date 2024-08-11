@@ -1,5 +1,5 @@
 ﻿namespace Doctor.Domain.DataTransferObjects.Speciality;
 
 public sealed record SpecialityResponse(
-    int Id, 
+    int Id,
     string Name);

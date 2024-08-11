@@ -3,7 +3,7 @@ using Doctor.Domain.Enums;
 using FluentValidation;
 using ModularMonolith.Common.Extensions;
 
-namespace Doctor.Domain.Validators;
+namespace Doctor.ApplicationService.Validators;
 
 public sealed class DoctorAttendantValidator : AbstractValidator<DoctorAttendant>
 {
@@ -19,7 +19,7 @@ public sealed class DoctorAttendantValidator : AbstractValidator<DoctorAttendant
         RuleFor(d => d.ExperienceYears)
             .GreaterThan(0)
             .WithMessage(EMessage.Required.Description().FormatTo("Experience Years"));
-        
+
         const int maximumAge = 110;
         RuleFor(d => d.BirthDate)
             .Must(birthDate => birthDate > DateOnly.FromDateTime(DateTime.Now.AddYears(-maximumAge)))

@@ -183,6 +183,108 @@ public sealed class DoctorAttendantServiceTests
     }
 
     [Fact]
+    public async Task GetAllFilteredAndPaginatedAsync_SuccessfulScenario_RetunsEntityPageList()
+    {
+        // A
+        var doctorGetAllFilterRequest = DoctorAttendantBuilder.NewObject().GetAllFilterRequestBuild();
+
+        var doctorGetAllFilterArgument = DoctorAttendantBuilder.NewObject().GetAllFilterArgumentBuild();
+        _doctorAttendantMapperMock.Setup(d => d.FilterRequestToArgumentDomain(It.IsAny<DoctorGetAllFilterRequest>()))
+            .Returns(doctorGetAllFilterArgument);
+
+        var doctorAttendantList = new List<DoctorAttendant>()
+        {
+            DoctorAttendantBuilder.NewObject().DomainBuild(),
+            DoctorAttendantBuilder.NewObject().DomainBuild(),
+            DoctorAttendantBuilder.NewObject().DomainBuild()
+        };
+        var doctorAttendantPageList = new PageList<DoctorAttendant>()
+        {
+            CurrentPage = 1,
+            PageSize = 1,
+            Result = doctorAttendantList,
+            TotalCount = 9,
+            TotalPages = 8
+        };
+        _doctorAttendantRepositoryMock.Setup(d => d.GetAllFilteredAndPaginatedAsync(
+            It.IsAny<DoctorGetAllFilterArgument>(),
+            It.IsAny<CancellationToken>()))
+            .ReturnsAsync(doctorAttendantPageList);
+
+        var doctorAttendantResponseList = new List<DoctorAttendantResponse>()
+        {
+            DoctorAttendantBuilder.NewObject().ResponseBuild()
+        };
+        var doctorAttendantResponsePageList = new PageList<DoctorAttendantResponse>()
+        {
+            CurrentPage = 9,
+            PageSize = 8,
+            Result = doctorAttendantResponseList,
+            TotalCount = 7,
+            TotalPages = 5
+        };
+        _doctorAttendantMapperMock.Setup(d => d.DomainPageListToResponsePageList(It.IsAny<PageList<DoctorAttendant>>()))
+            .Returns(doctorAttendantResponsePageList);
+
+        // A
+        var doctorAttendantResponsePageListResult = await _doctorAttendantService.GetAllFilteredAndPaginatedAsync(doctorGetAllFilterRequest, default);
+
+        // A
+        Assert.Equal(doctorAttendantResponsePageListResult.Result.Count, doctorAttendantResponsePageList.Result.Count);
+    }
+
+    [Fact]
+    public async Task GetByIdAsync_SuccessfulScenario_ReturnsEntity()
+    {
+        // A
+        var id = 123;
+
+        var doctorAttendant = DoctorAttendantBuilder.NewObject().DomainBuild();
+        _doctorAttendantRepositoryMock.Setup(d => d.GetByIdAsync(
+            It.IsAny<int>(),
+            true,
+            It.IsAny<CancellationToken>()))
+            .ReturnsAsync(doctorAttendant);
+
+        var doctorAttendantResponse = DoctorAttendantBuilder.NewObject().ResponseBuild();
+        _doctorAttendantMapperMock.Setup(d => d.DomainToResponse(It.IsAny<DoctorAttendant>()))
+            .Returns(doctorAttendantResponse);
+
+        // A
+        var doctorAttendantResponseResult = await _doctorAttendantService.GetByIdAsync(id, default);
+
+        // A
+        _doctorAttendantMapperMock.Verify(d => d.DomainToResponse(
+            It.IsAny<DoctorAttendant>()),
+            Times.Once());
+
+        Assert.NotNull(doctorAttendantResponseResult);
+    }
+
+    [Fact]
+    public async Task GetByIdAsync_EntityDoesNotExist_ReturnsNull()
+    {
+        // A
+        var id = 123;
+
+        _doctorAttendantRepositoryMock.Setup(d => d.GetByIdAsync(
+            It.IsAny<int>(),
+            true,
+            It.IsAny<CancellationToken>()))
+            .Returns(Task.FromResult<DoctorAttendant?>(null));
+
+        // A
+        var doctorAttendantResponseResult = await _doctorAttendantService.GetByIdAsync(id, default);
+
+        // A
+        _doctorAttendantMapperMock.Verify(d => d.DomainToResponse(
+            It.IsAny<DoctorAttendant>()),
+            Times.Never());
+
+        Assert.Null(doctorAttendantResponseResult);
+    }
+
+    [Fact]
     public async Task UpdateAsync_SuccessfulScenario_ReturnsTrue()
     {
         // A
@@ -390,107 +492,5 @@ public sealed class DoctorAttendantServiceTests
             Times.Never());
 
         Assert.False(updateResult);
-    }
-
-    [Fact]
-    public async Task GetAllFilteredAndPaginatedAsync_SuccessfulScenario_RetunsEntityPageList()
-    {
-        // A
-        var doctorGetAllFilterRequest = DoctorAttendantBuilder.NewObject().GetAllFilterRequestBuild();
-
-        var doctorGetAllFilterArgument = DoctorAttendantBuilder.NewObject().GetAllFilterArgumentBuild();
-        _doctorAttendantMapperMock.Setup(d => d.FilterRequestToArgumentDomain(It.IsAny<DoctorGetAllFilterRequest>()))
-            .Returns(doctorGetAllFilterArgument);
-
-        var doctorAttendantList = new List<DoctorAttendant>()
-        {
-            DoctorAttendantBuilder.NewObject().DomainBuild(),
-            DoctorAttendantBuilder.NewObject().DomainBuild(),
-            DoctorAttendantBuilder.NewObject().DomainBuild()
-        };
-        var doctorAttendantPageList = new PageList<DoctorAttendant>()
-        {
-            CurrentPage = 1,
-            PageSize = 1,
-            Result = doctorAttendantList,
-            TotalCount = 9,
-            TotalPages = 8
-        };
-        _doctorAttendantRepositoryMock.Setup(d => d.GetAllFilteredAndPaginatedAsync(
-            It.IsAny<DoctorGetAllFilterArgument>(),
-            It.IsAny<CancellationToken>()))
-            .ReturnsAsync(doctorAttendantPageList);
-
-        var doctorAttendantResponseList = new List<DoctorAttendantResponse>()
-        {
-            DoctorAttendantBuilder.NewObject().ResponseBuild()
-        };
-        var doctorAttendantResponsePageList = new PageList<DoctorAttendantResponse>()
-        {
-            CurrentPage = 9,
-            PageSize = 8,
-            Result = doctorAttendantResponseList,
-            TotalCount = 7,
-            TotalPages = 5
-        };
-        _doctorAttendantMapperMock.Setup(d => d.DomainPageListToResponsePageList(It.IsAny<PageList<DoctorAttendant>>()))
-            .Returns(doctorAttendantResponsePageList);
-
-        // A
-        var doctorAttendantResponsePageListResult = await _doctorAttendantService.GetAllFilteredAndPaginatedAsync(doctorGetAllFilterRequest, default);
-
-        // A
-        Assert.Equal(doctorAttendantResponsePageListResult.Result.Count, doctorAttendantResponsePageList.Result.Count);
-    }
-
-    [Fact]
-    public async Task GetByIdAsync_SuccessfulScenario_ReturnsEntity()
-    {
-        // A
-        var id = 123;
-
-        var doctorAttendant = DoctorAttendantBuilder.NewObject().DomainBuild();
-        _doctorAttendantRepositoryMock.Setup(d => d.GetByIdAsync(
-            It.IsAny<int>(),
-            true,
-            It.IsAny<CancellationToken>()))
-            .ReturnsAsync(doctorAttendant);
-
-        var doctorAttendantResponse = DoctorAttendantBuilder.NewObject().ResponseBuild();
-        _doctorAttendantMapperMock.Setup(d => d.DomainToResponse(It.IsAny<DoctorAttendant>()))
-            .Returns(doctorAttendantResponse);
-
-        // A
-        var doctorAttendantResponseResult = await _doctorAttendantService.GetByIdAsync(id, default);
-
-        // A
-        _doctorAttendantMapperMock.Verify(d => d.DomainToResponse(
-            It.IsAny<DoctorAttendant>()),
-            Times.Once());
-
-        Assert.NotNull(doctorAttendantResponseResult);
-    }
-
-    [Fact]
-    public async Task GetByIdAsync_EntityDoesNotExist_ReturnsNull()
-    {
-        // A
-        var id = 123;
-
-        _doctorAttendantRepositoryMock.Setup(d => d.GetByIdAsync(
-            It.IsAny<int>(),
-            true,
-            It.IsAny<CancellationToken>()))
-            .Returns(Task.FromResult<DoctorAttendant?>(null));
-
-        // A
-        var doctorAttendantResponseResult = await _doctorAttendantService.GetByIdAsync(id, default);
-
-        // A
-        _doctorAttendantMapperMock.Verify(d => d.DomainToResponse(
-            It.IsAny<DoctorAttendant>()),
-            Times.Never());
-
-        Assert.Null(doctorAttendantResponseResult);
     }
 }

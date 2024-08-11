@@ -14,26 +14,28 @@ public sealed class DoctorAttendantController(IDoctorAttendantService doctorAtte
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(List<Notification>))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public Task<bool> AddAsync([FromBody] DoctorAttendantSave doctorAttendantSave) =>
-        doctorAttendantService.AddAsync(doctorAttendantSave);
+    public Task<bool> AddAsync([FromBody] DoctorAttendantSave doctorAttendantSave, CancellationToken cancellationToken) =>
+        doctorAttendantService.AddAsync(doctorAttendantSave, cancellationToken);
 
     [HttpPut("update")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(List<Notification>))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public Task<bool> UpdateAsync([FromBody] DoctorAttendantUpdate doctorAttendantUpdate) =>
-        doctorAttendantService.UpdateAsync(doctorAttendantUpdate);
+    public Task<bool> UpdateAsync([FromBody] DoctorAttendantUpdate doctorAttendantUpdate, CancellationToken cancellationToken) =>
+        doctorAttendantService.UpdateAsync(doctorAttendantUpdate, cancellationToken);
 
     [HttpGet("get-all-filtered")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PageList<DoctorAttendantResponse>))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public Task<PageList<DoctorAttendantResponse>> GetAllFilteredAndPaginatedAsync([FromQuery]DoctorGetAllFilterRequest filterRequest) =>
-        doctorAttendantService.GetAllFilteredAndPaginatedAsync(filterRequest);
+    public Task<PageList<DoctorAttendantResponse>> GetAllFilteredAndPaginatedAsync(
+        [FromQuery] DoctorGetAllFilterRequest filterRequest,
+        CancellationToken cancellationToken) =>
+        doctorAttendantService.GetAllFilteredAndPaginatedAsync(filterRequest, cancellationToken);
 
     [HttpGet("get-by-id")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(DoctorAttendantResponse))]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public Task<DoctorAttendantResponse?> GetByIdAsync([FromQuery] int id) =>
-        doctorAttendantService.GetByIdAsync(id);
+    public Task<DoctorAttendantResponse?> GetByIdAsync([FromQuery] int id, CancellationToken cancellationToken) =>
+        doctorAttendantService.GetByIdAsync(id, cancellationToken);
 }

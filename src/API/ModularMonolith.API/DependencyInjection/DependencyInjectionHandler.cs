@@ -1,6 +1,6 @@
-﻿using Doctor.DependencyInjection;
+﻿using Appointment.DependencyInjection;
+using Doctor.DependencyInjection;
 using Patient.DependencyInjection;
-using Appointment.DependencyInjection;
 
 namespace ModularMonolith.API.DependencyInjection;
 

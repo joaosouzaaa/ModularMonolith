@@ -5,7 +5,7 @@ namespace Patient.Domain.Interfaces.Mappers;
 
 public interface IPatientClientMapper
 {
+    PatientClientResponse DomainToResponse(PatientClient patientClient);
     PatientClient SaveToDomain(PatientClientSave patientClientSave);
     void UpdateToDomain(PatientClientUpdate patientClientUpdate, PatientClient patientClient);
-    PatientClientResponse DomainToResponse(PatientClient patientClient);
 }

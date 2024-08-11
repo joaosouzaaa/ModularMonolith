@@ -14,7 +14,7 @@ public sealed class ScheduleMapperTests
     }
 
     [Fact]
-    public void AppointmentTimeCreatedEventToDomain_SuccessfulScenario()
+    public void AppointmentTimeCreatedEventToDomain_SuccessfulScenario_ReturnsDomainObject()
     {
         // A
         var appointmentTimeCreatedEvent = ContractsBuilder.NewObject().AppointmentTimeCreatedEventBuild();
@@ -28,7 +28,7 @@ public sealed class ScheduleMapperTests
     }
 
     [Fact]
-    public void DomainListToResponseList_SuccessfulScenario()
+    public void DomainListToResponseList_SuccessfulScenario_ReturnsResponseList()
     {
         // A
         var scheduleList = new List<Schedule>()
@@ -37,7 +37,7 @@ public sealed class ScheduleMapperTests
         };
 
         // A
-        var scheduleResponseListResult =_scheduleMapper.DomainListToResponseList(scheduleList);
+        var scheduleResponseListResult = _scheduleMapper.DomainListToResponseList(scheduleList);
 
         // A
         Assert.Equal(scheduleResponseListResult.Count, scheduleList.Count);

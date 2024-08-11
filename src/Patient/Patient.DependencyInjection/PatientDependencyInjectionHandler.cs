@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Patient.Infrastructure.DatabaseContexts;
 using ModularMonolith.Common.Factories;
-using FluentValidation;
+using Patient.Infrastructure.DatabaseContexts;
 
 namespace Patient.DependencyInjection;
 
@@ -25,7 +25,7 @@ public static class PatientDependencyInjectionHandler
         services.AddServicesDependencyInjection();
         services.AddConsumersDependencyInjection();
 
-        services.AddValidatorsFromAssembly(Domain.AssemblyReference.Assembly);
+        services.AddValidatorsFromAssembly(ApplicationServices.AssemblyReference.Assembly);
     }
 
     public static void UsePatientDependencyInjection(this IApplicationBuilder app) =>

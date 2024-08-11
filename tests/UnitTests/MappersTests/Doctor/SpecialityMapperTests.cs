@@ -14,7 +14,7 @@ public sealed class SpecialityMapperTests
     }
 
     [Fact]
-    public void DomainListToResponseList_SuccessfulScenario()
+    public void DomainListToResponseList_SuccessfulScenario_ReturnsResponseList()
     {
         // A
         var specialityList = new List<Speciality>()
@@ -32,7 +32,7 @@ public sealed class SpecialityMapperTests
     }
 
     [Fact]
-    public void SaveToDomain_SuccessfulScenario()
+    public void SaveToDomain_SuccessfulScenario_ReturnsDomainObject()
     {
         // A
         var specialitySave = SpecialityBuilder.NewObject().SaveBuild();

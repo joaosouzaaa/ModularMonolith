@@ -6,6 +6,12 @@ namespace Patient.ApplicationServices.Mappers;
 
 public sealed class PatientClientMapper(IContactInfoMapper contactInfoMapper) : IPatientClientMapper
 {
+    public PatientClientResponse DomainToResponse(PatientClient patientClient) =>
+        new(patientClient.Id,
+            patientClient.Name,
+            patientClient.Address,
+            contactInfoMapper.DomainToResponse(patientClient.ContactInfo));
+
     public PatientClient SaveToDomain(PatientClientSave patientClientSave) =>
         new()
         {
@@ -21,13 +27,4 @@ public sealed class PatientClientMapper(IContactInfoMapper contactInfoMapper) : 
 
         contactInfoMapper.RequestToDomainUpdate(patientClientUpdate.ContactInfo, patientClient.ContactInfo);
     }
-
-    public PatientClientResponse DomainToResponse(PatientClient patientClient) =>
-        new()
-        {
-            Address = patientClient.Address,
-            Id = patientClient.Id,
-            Name = patientClient.Name,
-            ContactInfo = contactInfoMapper.DomainToResponse(patientClient.ContactInfo)
-        };
 }

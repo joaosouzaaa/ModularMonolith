@@ -24,7 +24,7 @@ public static class DoctorDependencyInjectionHandler
         services.AddServicesDependencyInjection();
         services.AddConsumersDependencyInjection();
 
-        services.AddValidatorsFromAssembly(Domain.AssemblyReference.Assembly);
+        services.AddValidatorsFromAssembly(ApplicationService.AssemblyReference.Assembly);
     }
 
     public static void UseDoctorDependencyInjection(this IApplicationBuilder app) =>

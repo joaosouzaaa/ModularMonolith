@@ -1,7 +1,7 @@
 ﻿using Appointment.Infrastructure.DatabaseContexts;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore; 
 
 namespace Appointment.DependencyInjection;
 

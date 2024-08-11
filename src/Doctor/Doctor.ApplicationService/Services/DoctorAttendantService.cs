@@ -50,6 +50,27 @@ public sealed class DoctorAttendantService : BaseService<DoctorAttendant>, IDoct
         return await _doctorAttendantRepository.AddAsync(doctorAttendant, cancellationToken);
     }
 
+    public async Task<PageList<DoctorAttendantResponse>> GetAllFilteredAndPaginatedAsync(DoctorGetAllFilterRequest filterRequest, CancellationToken cancellationToken)
+    {
+        var getAllFilterArgument = _doctorAttendantMapper.FilterRequestToArgumentDomain(filterRequest);
+
+        var doctorPageList = await _doctorAttendantRepository.GetAllFilteredAndPaginatedAsync(getAllFilterArgument, cancellationToken);
+
+        return _doctorAttendantMapper.DomainPageListToResponsePageList(doctorPageList);
+    }
+
+    public async Task<DoctorAttendantResponse?> GetByIdAsync(int id, CancellationToken cancellationToken)
+    {
+        var doctorAttendant = await _doctorAttendantRepository.GetByIdAsync(id, true, cancellationToken);
+
+        if (doctorAttendant is null)
+        {
+            return null;
+        }
+
+        return _doctorAttendantMapper.DomainToResponse(doctorAttendant);
+    }
+
     public async Task<bool> UpdateAsync(DoctorAttendantUpdate doctorAttendantUpdate, CancellationToken cancellationToken)
     {
         var doctorAttendant = await _doctorAttendantRepository.GetByIdAsync(doctorAttendantUpdate.Id, false, cancellationToken);
@@ -76,32 +97,11 @@ public sealed class DoctorAttendantService : BaseService<DoctorAttendant>, IDoct
         return await _doctorAttendantRepository.UpdateAsync(doctorAttendant, cancellationToken);
     }
 
-    public async Task<PageList<DoctorAttendantResponse>> GetAllFilteredAndPaginatedAsync(DoctorGetAllFilterRequest filterRequest, CancellationToken cancellationToken)
-    {
-        var getAllFilterArgument = _doctorAttendantMapper.FilterRequestToArgumentDomain(filterRequest);
-
-        var doctorPageList = await _doctorAttendantRepository.GetAllFilteredAndPaginatedAsync(getAllFilterArgument, cancellationToken);
-
-        return _doctorAttendantMapper.DomainPageListToResponsePageList(doctorPageList);
-    }
-
-    public async Task<DoctorAttendantResponse?> GetByIdAsync(int id, CancellationToken cancellationToken)
-    {
-        var doctorAttendant = await _doctorAttendantRepository.GetByIdAsync(id, true, cancellationToken);
-
-        if (doctorAttendant is null)
-        {
-            return null;
-        }
-
-        return _doctorAttendantMapper.DomainToResponse(doctorAttendant);
-    }
-
     private async Task<bool> AddSpecialityRelationshipAsync(List<int> specialityRequestIdList, DoctorAttendant doctorAttendant, CancellationToken cancellationToken)
     {
         var specialityList = await _specialityServiceFacade.GetAllByIdListAsync(specialityRequestIdList, cancellationToken);
 
-        if(specialityList.Count != specialityRequestIdList.Count)
+        if (specialityList.Count != specialityRequestIdList.Count)
         {
             _notificationHandler.AddNotification(nameof(EMessage.NotFound), EMessage.NotFound.Description().FormatTo("Specialities"));
 

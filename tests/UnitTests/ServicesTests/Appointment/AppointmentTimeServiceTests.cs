@@ -162,15 +162,6 @@ public sealed class AppointmentTimeServiceTests
             It.IsAny<CancellationToken>()))
             .ReturnsAsync(validationResult);
 
-        _appointmentTimeRepositoryMock.Setup(a => a.AddAsync(
-            It.IsAny<AppointmentTime>(),
-            It.IsAny<CancellationToken>()))
-            .ReturnsAsync(true);
-
-        var apointmentTimeCreatedEvent = AppointmentTimeBuilder.NewObject().CreatedEventBuild();
-        _appointmentTimeMapperMock.Setup(a => a.DomainToTimeCreatedEvent(It.IsAny<AppointmentTime>()))
-            .Returns(apointmentTimeCreatedEvent);
-
         // A
         var addResult = await _appointmentTimeService.AddAsync(appointTimeSave, default);
 

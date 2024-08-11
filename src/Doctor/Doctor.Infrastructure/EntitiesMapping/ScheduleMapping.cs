@@ -17,11 +17,5 @@ internal sealed class ScheduleMapping : IEntityTypeConfiguration<Schedule>
             .IsRequired(true)
             .HasColumnName("time")
             .HasColumnType("timestamp without time zone");
-
-        builder.HasOne(s => s.Doctor)
-            .WithMany(d => d.Schedules)
-            .HasForeignKey(s => s.DoctorAttendantId)
-            .HasConstraintName("FK_DoctorAttendant_Schedule")
-            .OnDelete(DeleteBehavior.Cascade);
     }
 }

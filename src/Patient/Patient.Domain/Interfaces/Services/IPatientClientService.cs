@@ -4,7 +4,7 @@ namespace Patient.Domain.Interfaces.Services;
 
 public interface IPatientClientService
 {
-    Task<bool> AddAsync(PatientClientSave patientClientSave);
-    Task<bool> UpdateAsync(PatientClientUpdate patientClientUpdate);
-    Task<PatientClientResponse?> GetByIdAsync(int id);
+    Task<bool> AddAsync(PatientClientSave patientClientSave, CancellationToken cancellationToken);
+    Task<PatientClientResponse?> GetByIdAsync(int id, CancellationToken cancellationToken);
+    Task<bool> UpdateAsync(PatientClientUpdate patientClientUpdate, CancellationToken cancellationToken);
 }

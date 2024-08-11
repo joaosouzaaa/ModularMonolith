@@ -13,20 +13,20 @@ public sealed class PatientClientController(IPatientClientService patientClientS
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(List<Notification>))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public Task<bool> AddAsync([FromBody] PatientClientSave patientClientSave) =>
-        patientClientService.AddAsync(patientClientSave);
+    public Task<bool> AddAsync([FromBody] PatientClientSave patientClientSave, CancellationToken cancellationToken) =>
+        patientClientService.AddAsync(patientClientSave, cancellationToken);
 
     [HttpPut("update")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(List<Notification>))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public Task<bool> UpdateAsync([FromBody] PatientClientUpdate patientClientUpdate) =>
-        patientClientService.UpdateAsync(patientClientUpdate);
+    public Task<bool> UpdateAsync([FromBody] PatientClientUpdate patientClientUpdate, CancellationToken cancellationToken) =>
+        patientClientService.UpdateAsync(patientClientUpdate, cancellationToken);
 
     [HttpGet("get-by-id")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PatientClientResponse))]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public Task<PatientClientResponse?> GetByIdAsync([FromQuery] int id) =>
-        patientClientService.GetByIdAsync(id);
+    public Task<PatientClientResponse?> GetByIdAsync([FromQuery] int id, CancellationToken cancellationToken) =>
+        patientClientService.GetByIdAsync(id, cancellationToken);
 }

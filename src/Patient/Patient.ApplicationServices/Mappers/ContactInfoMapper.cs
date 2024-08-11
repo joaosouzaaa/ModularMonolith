@@ -6,6 +6,11 @@ namespace Patient.ApplicationServices.Mappers;
 
 public sealed class ContactInfoMapper : IContactInfoMapper
 {
+    public ContactInfoResponse DomainToResponse(ContactInfo contactInfo) =>
+        new(contactInfo.Id,
+            contactInfo.PhoneNumber,
+            contactInfo.Email);
+
     public ContactInfo RequestToDomainCreate(ContactInfoRequest contactInfoRequest) =>
         new()
         {
@@ -18,12 +23,4 @@ public sealed class ContactInfoMapper : IContactInfoMapper
         contactInfo.Email = contactInfoRequest.Email;
         contactInfo.PhoneNumber = contactInfoRequest.PhoneNumber;
     }
-
-    public ContactInfoResponse DomainToResponse(ContactInfo contactInfo) =>
-        new()
-        {
-            Email = contactInfo.Email,
-            Id = contactInfo.Id,
-            PhoneNumber = contactInfo.PhoneNumber
-        };
 }

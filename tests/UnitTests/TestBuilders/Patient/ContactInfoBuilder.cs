@@ -2,6 +2,7 @@
 using Patient.Domain.Entities;
 
 namespace UnitTests.TestBuilders.Patient;
+
 public sealed class ContactInfoBuilder
 {
     private string _email = "valid@email.com";
@@ -21,16 +22,13 @@ public sealed class ContactInfoBuilder
         };
 
     public ContactInfoRequest RequestBuild() =>
-        new(_phoneNumber, 
+        new(_phoneNumber,
             _email);
 
     public ContactInfoResponse ResponseBuild() =>
-        new()
-        {
-            Email = _email,
-            Id = _id,
-            PhoneNumber = _phoneNumber
-        };
+        new(_id,
+            _phoneNumber,
+            _email);
 
     public ContactInfoBuilder WithEmail(string email)
     {

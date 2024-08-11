@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Patient.ApplicationServices.Consumers;
+using Patient.Infrastructure.Consumers;
 
 namespace Patient.DependencyInjection;
 
 internal static class ConsumersDependencyInjection
 {
-    public static void AddConsumersDependencyInjection(this IServiceCollection services) =>
+    internal static void AddConsumersDependencyInjection(this IServiceCollection services) =>
         services.AddHostedService<AppointmentCreatedConsumer>();
 }

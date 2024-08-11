@@ -1,14 +1,20 @@
-﻿using Patient.Domain.Validators;
+﻿using FluentValidation;
+using Moq;
+using Patient.ApplicationServices.Validators;
+using Patient.Domain.Entities;
 using UnitTests.TestBuilders.Patient;
 
 namespace UnitTests.ValidatorTests.Patient;
+
 public sealed class PatientClientValidatorTests
 {
+    private readonly Mock<IValidator<ContactInfo>> _contactInfoValidatorMock;
     private readonly PatientClientValidator _patientClientValidator;
 
     public PatientClientValidatorTests()
     {
-        _patientClientValidator = new PatientClientValidator();
+        _contactInfoValidatorMock = new Mock<IValidator<ContactInfo>>();
+        _patientClientValidator = new PatientClientValidator(_contactInfoValidatorMock.Object);
     }
 
     [Fact]
@@ -24,26 +30,12 @@ public sealed class PatientClientValidatorTests
         Assert.True(validationResult.IsValid);
     }
 
-    [Fact]
-    public async Task ValidateAsync_InvalidContactInfo_ReturnsFalse()
-    {
-        // A
-        var invalidContactInfo = ContactInfoBuilder.NewObject().WithEmail("test").DomainBuild();
-        var patientClientWithInvalidContactInfo = PatientClientBuilder.NewObject().WithContactInfo(invalidContactInfo).DomainBuild();
-
-        // A
-        var validationResult = await _patientClientValidator.ValidateAsync(patientClientWithInvalidContactInfo);
-
-        // A
-        Assert.False(validationResult.IsValid);
-    }
-
     [Theory]
     [MemberData(nameof(InvalidNameParameters))]
     public async Task ValidateAsync_InvalidName_ReturnsFalse(string name)
     {
         // A
-        var patientClientWithInvalidName= PatientClientBuilder.NewObject().WithName(name).DomainBuild();
+        var patientClientWithInvalidName = PatientClientBuilder.NewObject().WithName(name).DomainBuild();
 
         // A
         var validationResult = await _patientClientValidator.ValidateAsync(patientClientWithInvalidName);
@@ -52,25 +44,19 @@ public sealed class PatientClientValidatorTests
         Assert.False(validationResult.IsValid);
     }
 
-    public static IEnumerable<object[]> InvalidNameParameters()
-    {
-        yield return new object[]
+    public static TheoryData<string> InvalidNameParameters() =>
+        new()
         {
-            ""
-        };
-
-        yield return new object[]
-        {
+            "",
             new string('a', 101)
         };
-    }
 
     [Theory]
     [MemberData(nameof(InvalidAddressParameters))]
     public async Task ValidateAsync_InvalidAddress_ReturnsFalse(string address)
     {
         // A
-        var patientClientWithInvalidAddress= PatientClientBuilder.NewObject().WithAddress(address).DomainBuild();
+        var patientClientWithInvalidAddress = PatientClientBuilder.NewObject().WithAddress(address).DomainBuild();
 
         // A
         var validationResult = await _patientClientValidator.ValidateAsync(patientClientWithInvalidAddress);
@@ -79,16 +65,10 @@ public sealed class PatientClientValidatorTests
         Assert.False(validationResult.IsValid);
     }
 
-    public static IEnumerable<object[]> InvalidAddressParameters()
-    {
-        yield return new object[]
+    public static TheoryData<string> InvalidAddressParameters() =>
+        new()
         {
-            ""
-        };
-
-        yield return new object[]
-        {
+            "",
             new string('a', 201)
         };
-    }
 }

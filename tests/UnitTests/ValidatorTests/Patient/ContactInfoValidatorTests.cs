@@ -1,8 +1,8 @@
-﻿using FluentValidation;
-using Patient.Domain.Validators;
+﻿using Patient.ApplicationServices.Validators;
 using UnitTests.TestBuilders.Patient;
 
 namespace UnitTests.ValidatorTests.Patient;
+
 public sealed class ContactInfoValidatorTests
 {
     private readonly ContactInfoValidator _contactInfoValidator;
@@ -52,33 +52,15 @@ public sealed class ContactInfoValidatorTests
         var validationResult = await _contactInfoValidator.ValidateAsync(contactInfoWithInvalidEmail);
 
         // A
-        if (validationResult.IsValid)
-        {
-
-        }
         Assert.False(validationResult.IsValid);
     }
 
-    public static IEnumerable<object[]> InvalidEmailParameters()
-    {
-        yield return new object[]
+    public static TheoryData<string> InvalidEmailParameters() =>
+        new()
         {
-            "a"
-        };
-
-        yield return new object[]
-        {
-            "test"
-        };
-
-        yield return new object[]
-        {
-            "test.com@"
-        };
-
-        yield return new object[]
-        {
+            "a",
+            "test",
+            "test.com@",
             $"testvalid{new string('a', 100)}@test.com"
         };
-    }
 }

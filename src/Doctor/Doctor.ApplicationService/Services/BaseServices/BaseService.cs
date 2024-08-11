@@ -10,7 +10,7 @@ public abstract class BaseService<TEntity>
     private readonly IValidator<TEntity> _validator;
 
     public BaseService(
-        INotificationHandler notificationHandler, 
+        INotificationHandler notificationHandler,
         IValidator<TEntity> validator)
     {
         _notificationHandler = notificationHandler;
@@ -26,7 +26,7 @@ public abstract class BaseService<TEntity>
             return true;
         }
 
-        foreach(var error in validationResult.Errors)
+        foreach (var error in validationResult.Errors)
         {
             _notificationHandler.AddNotification(error.PropertyName, error.ErrorMessage);
         }

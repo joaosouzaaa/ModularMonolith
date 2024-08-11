@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
+using ModularMonolith.Common.Extensions;
 using Patient.Domain.Entities;
 using Patient.Domain.Enums;
-using Patient.Domain.Extensions;
 
-namespace Patient.Domain.Validators;
+namespace Patient.ApplicationServices.Validators;
 
 public sealed class ContactInfoValidator : AbstractValidator<ContactInfo>
 {

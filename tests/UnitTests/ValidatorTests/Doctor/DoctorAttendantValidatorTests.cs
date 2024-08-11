@@ -1,5 +1,5 @@
-﻿using Doctor.Domain.Entities;
-using Doctor.Domain.Validators;
+﻿using Doctor.ApplicationService.Validators;
+using Doctor.Domain.Entities;
 using FluentValidation;
 using Moq;
 using UnitTests.TestBuilders.Doctor;

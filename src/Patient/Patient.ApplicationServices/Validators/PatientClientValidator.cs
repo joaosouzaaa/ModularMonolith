@@ -1,15 +1,15 @@
 ﻿using FluentValidation;
+using ModularMonolith.Common.Extensions;
 using Patient.Domain.Entities;
 using Patient.Domain.Enums;
-using Patient.Domain.Extensions;
 
-namespace Patient.Domain.Validators;
+namespace Patient.ApplicationServices.Validators;
 
 public sealed class PatientClientValidator : AbstractValidator<PatientClient>
 {
-    public PatientClientValidator()
+    public PatientClientValidator(IValidator<ContactInfo> contactInfoValidator)
     {
-        RuleFor(p => p.ContactInfo).SetValidator(new ContactInfoValidator());
+        RuleFor(p => p.ContactInfo).SetValidator(contactInfoValidator);
 
         RuleFor(p => p.Name)
             .Length(1, 100)

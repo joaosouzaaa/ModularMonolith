@@ -10,11 +10,12 @@ using Patient.Domain.Interfaces.Repositories;
 using UnitTests.TestBuilders.Patient;
 
 namespace UnitTests.ServicesTests.Patient;
+
 public sealed class PatientClientServiceTests
 {
     private readonly Mock<IPatientClientRepository> _patientClientRepositoryMock;
-    private readonly Mock<IPatientClientMapper > _patientClientMapperMock;
-    private readonly Mock<INotificationHandler > _notificationHandlerMock;
+    private readonly Mock<IPatientClientMapper> _patientClientMapperMock;
+    private readonly Mock<INotificationHandler> _notificationHandlerMock;
     private readonly Mock<IValidator<PatientClient>> _validatorMock;
     private readonly PatientClientService _patientClientService;
 
@@ -24,7 +25,10 @@ public sealed class PatientClientServiceTests
         _patientClientMapperMock = new Mock<IPatientClientMapper>();
         _notificationHandlerMock = new Mock<INotificationHandler>();
         _validatorMock = new Mock<IValidator<PatientClient>>();
-        _patientClientService = new PatientClientService(_patientClientRepositoryMock.Object, _patientClientMapperMock.Object, _notificationHandlerMock.Object,
+        _patientClientService = new PatientClientService(
+            _patientClientRepositoryMock.Object,
+            _patientClientMapperMock.Object,
+            _notificationHandlerMock.Object,
             _validatorMock.Object);
     }
 
@@ -35,18 +39,29 @@ public sealed class PatientClientServiceTests
         var patientClientSave = PatientClientBuilder.NewObject().SaveBuild();
 
         var validationResult = new ValidationResult();
-        _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<PatientClient>(), It.IsAny<CancellationToken>()))
+        _validatorMock.Setup(v => v.ValidateAsync(
+            It.IsAny<PatientClient>(),
+            It.IsAny<CancellationToken>()))
             .ReturnsAsync(validationResult);
 
-        _patientClientRepositoryMock.Setup(p => p.AddAsync(It.IsAny<PatientClient>()))
+        _patientClientRepositoryMock.Setup(p => p.AddAsync(
+            It.IsAny<PatientClient>(),
+            It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
 
         // A
-        var addResult = await _patientClientService.AddAsync(patientClientSave);
+        var addResult = await _patientClientService.AddAsync(patientClientSave, default);
 
         // A
-        _notificationHandlerMock.Verify(n => n.AddNotification(It.IsAny<string>(), It.IsAny<string>()), Times.Never());
-        _patientClientRepositoryMock.Verify(p => p.AddAsync(It.IsAny<PatientClient>()), Times.Once());
+        _notificationHandlerMock.Verify(n => n.AddNotification(
+            It.IsAny<string>(),
+            It.IsAny<string>()),
+            Times.Never());
+
+        _patientClientRepositoryMock.Verify(p => p.AddAsync(
+            It.IsAny<PatientClient>(),
+            It.IsAny<CancellationToken>()),
+            Times.Once());
 
         Assert.True(addResult);
     }
@@ -57,25 +72,82 @@ public sealed class PatientClientServiceTests
         // A
         var patientClientSave = PatientClientBuilder.NewObject().SaveBuild();
 
-        var validationFailureList= new List<ValidationFailure>()
+        var validationFailureList = new List<ValidationFailure>()
         {
             new("test", "a")
-        };   
-        var validationResult = new ValidationResult()
-        {
-            Errors = validationFailureList
         };
-        _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<PatientClient>(), It.IsAny<CancellationToken>()))
+        var validationResult = new ValidationResult(validationFailureList);
+        _validatorMock.Setup(v => v.ValidateAsync(
+            It.IsAny<PatientClient>(),
+            It.IsAny<CancellationToken>()))
             .ReturnsAsync(validationResult);
 
         // A
-        var addResult = await _patientClientService.AddAsync(patientClientSave);
+        var addResult = await _patientClientService.AddAsync(patientClientSave, default);
 
         // A
-        _notificationHandlerMock.Verify(n => n.AddNotification(It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(validationResult.Errors.Count));
-        _patientClientRepositoryMock.Verify(p => p.AddAsync(It.IsAny<PatientClient>()), Times.Never());
+        _notificationHandlerMock.Verify(n => n.AddNotification(
+            It.IsAny<string>(),
+            It.IsAny<string>()),
+            Times.Exactly(validationResult.Errors.Count));
+
+        _patientClientRepositoryMock.Verify(p => p.AddAsync(
+            It.IsAny<PatientClient>(),
+            It.IsAny<CancellationToken>()),
+            Times.Never());
 
         Assert.False(addResult);
+    }
+
+    [Fact]
+    public async Task GetByIdAsync_SuccessfulScenario_ReturnsEntity()
+    {
+        // A
+        var id = 123;
+
+        var patientClient = PatientClientBuilder.NewObject().DomainBuild();
+        _patientClientRepositoryMock.Setup(p => p.GetByIdAsync(
+            It.IsAny<int>(),
+            true,
+            It.IsAny<CancellationToken>()))
+            .ReturnsAsync(patientClient);
+
+        var patientClientResponse = PatientClientBuilder.NewObject().ResponseBuild();
+        _patientClientMapperMock.Setup(p => p.DomainToResponse(It.IsAny<PatientClient>()))
+            .Returns(patientClientResponse);
+
+        // A
+        var patientClientResponseResult = await _patientClientService.GetByIdAsync(id, default);
+
+        // A
+        _patientClientMapperMock.Verify(p => p.DomainToResponse(
+            It.IsAny<PatientClient>()),
+            Times.Once());
+
+        Assert.NotNull(patientClientResponseResult);
+    }
+
+    [Fact]
+    public async Task GetByIdAsync_EntityDoesNotExist_ReturnsNull()
+    {
+        // A
+        var id = 123;
+
+        _patientClientRepositoryMock.Setup(p => p.GetByIdAsync(
+            It.IsAny<int>(),
+            true,
+            It.IsAny<CancellationToken>()))
+            .Returns(Task.FromResult<PatientClient?>(null));
+
+        // A
+        var patientClientResponseResult = await _patientClientService.GetByIdAsync(id, default);
+
+        // A
+        _patientClientMapperMock.Verify(p => p.DomainToResponse(
+            It.IsAny<PatientClient>()),
+            Times.Never());
+
+        Assert.Null(patientClientResponseResult);
     }
 
     [Fact]
@@ -85,24 +157,36 @@ public sealed class PatientClientServiceTests
         var patientClientUpdate = PatientClientBuilder.NewObject().UpdateBuild();
 
         var patientClient = PatientClientBuilder.NewObject().DomainBuild();
-        _patientClientRepositoryMock.Setup(p => p.GetByIdAsync(It.IsAny<int>(), It.Is<bool>(b => b == false)))
+        _patientClientRepositoryMock.Setup(p => p.GetByIdAsync(
+            It.IsAny<int>(),
+            false,
+            It.IsAny<CancellationToken>()))
             .ReturnsAsync(patientClient);
 
-        _patientClientMapperMock.Setup(p => p.UpdateToDomain(It.IsAny<PatientClientUpdate>(), It.IsAny<PatientClient>()));
-
         var validationResult = new ValidationResult();
-        _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<PatientClient>(), It.IsAny<CancellationToken>()))
+        _validatorMock.Setup(v => v.ValidateAsync(
+            It.IsAny<PatientClient>(),
+            It.IsAny<CancellationToken>()))
             .ReturnsAsync(validationResult);
 
-        _patientClientRepositoryMock.Setup(p => p.UpdateAsync(It.IsAny<PatientClient>()))
+        _patientClientRepositoryMock.Setup(p => p.UpdateAsync(
+            It.IsAny<PatientClient>(),
+            default))
             .ReturnsAsync(true);
 
         // A
-        var updateResult = await _patientClientService.UpdateAsync(patientClientUpdate);
+        var updateResult = await _patientClientService.UpdateAsync(patientClientUpdate, default);
 
         // A
-        _notificationHandlerMock.Verify(n => n.AddNotification(It.IsAny<string>(), It.IsAny<string>()), Times.Never());
-        _patientClientRepositoryMock.Verify(p => p.UpdateAsync(It.IsAny<PatientClient>()), Times.Once());
+        _notificationHandlerMock.Verify(n => n.AddNotification(
+            It.IsAny<string>(),
+            It.IsAny<string>()),
+            Times.Never());
+
+        _patientClientRepositoryMock.Verify(p => p.UpdateAsync(
+            It.IsAny<PatientClient>(),
+            It.IsAny<CancellationToken>()),
+            Times.Once());
 
         Assert.True(updateResult);
     }
@@ -113,17 +197,35 @@ public sealed class PatientClientServiceTests
         // A
         var patientClientUpdate = PatientClientBuilder.NewObject().UpdateBuild();
 
-        _patientClientRepositoryMock.Setup(p => p.GetByIdAsync(It.IsAny<int>(), It.Is<bool>(b => b == false)))
+        _patientClientRepositoryMock.Setup(p => p.GetByIdAsync(
+            It.IsAny<int>(),
+            false,
+            It.IsAny<CancellationToken>()))
             .Returns(Task.FromResult<PatientClient?>(null));
 
         // A
-        var updateResult = await _patientClientService.UpdateAsync(patientClientUpdate);
+        var updateResult = await _patientClientService.UpdateAsync(patientClientUpdate, default);
 
         // A
-        _notificationHandlerMock.Verify(n => n.AddNotification(It.IsAny<string>(), It.IsAny<string>()), Times.Once());
-        _patientClientMapperMock.Verify(p => p.UpdateToDomain(It.IsAny<PatientClientUpdate>(), It.IsAny<PatientClient>()), Times.Never());
-        _validatorMock.Verify(v => v.ValidateAsync(It.IsAny<PatientClient>(), It.IsAny<CancellationToken>()), Times.Never());
-        _patientClientRepositoryMock.Verify(p => p.UpdateAsync(It.IsAny<PatientClient>()), Times.Never());
+        _notificationHandlerMock.Verify(n => n.AddNotification(
+            It.IsAny<string>(),
+            It.IsAny<string>()),
+            Times.Once());
+
+        _patientClientMapperMock.Verify(p => p.UpdateToDomain(
+            It.IsAny<PatientClientUpdate>(),
+            It.IsAny<PatientClient>()),
+            Times.Never());
+
+        _validatorMock.Verify(v => v.ValidateAsync(
+            It.IsAny<PatientClient>(),
+            It.IsAny<CancellationToken>()),
+            Times.Never());
+
+        _patientClientRepositoryMock.Verify(p => p.UpdateAsync(
+            It.IsAny<PatientClient>(),
+            It.IsAny<CancellationToken>()),
+            Times.Never());
 
         Assert.False(updateResult);
     }
@@ -135,10 +237,11 @@ public sealed class PatientClientServiceTests
         var patientClientUpdate = PatientClientBuilder.NewObject().UpdateBuild();
 
         var patientClient = PatientClientBuilder.NewObject().DomainBuild();
-        _patientClientRepositoryMock.Setup(p => p.GetByIdAsync(It.IsAny<int>(), It.Is<bool>(b => b == false)))
+        _patientClientRepositoryMock.Setup(p => p.GetByIdAsync(
+            It.IsAny<int>(),
+            false,
+            It.IsAny<CancellationToken>()))
             .ReturnsAsync(patientClient);
-
-        _patientClientMapperMock.Setup(p => p.UpdateToDomain(It.IsAny<PatientClientUpdate>(), It.IsAny<PatientClient>()));
 
         var validationFailureList = new List<ValidationFailure>()
         {
@@ -146,61 +249,26 @@ public sealed class PatientClientServiceTests
             new("test", "a"),
             new("test", "a")
         };
-        var validationResult = new ValidationResult()
-        {
-            Errors = validationFailureList
-        };
-        _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<PatientClient>(), It.IsAny<CancellationToken>()))
+        var validationResult = new ValidationResult(validationFailureList);
+        _validatorMock.Setup(v => v.ValidateAsync(
+            It.IsAny<PatientClient>(),
+            It.IsAny<CancellationToken>()))
             .ReturnsAsync(validationResult);
 
         // A
-        var updateResult = await _patientClientService.UpdateAsync(patientClientUpdate);
+        var updateResult = await _patientClientService.UpdateAsync(patientClientUpdate, default);
 
         // A
-        _notificationHandlerMock.Verify(n => n.AddNotification(It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(validationResult.Errors.Count));
-        _patientClientRepositoryMock.Verify(p => p.UpdateAsync(It.IsAny<PatientClient>()), Times.Never());
+        _notificationHandlerMock.Verify(n => n.AddNotification(
+            It.IsAny<string>(),
+            It.IsAny<string>()),
+            Times.Exactly(validationResult.Errors.Count));
+
+        _patientClientRepositoryMock.Verify(p => p.UpdateAsync(
+            It.IsAny<PatientClient>(),
+            It.IsAny<CancellationToken>()),
+            Times.Never());
 
         Assert.False(updateResult);
-    }
-
-    [Fact]
-    public async Task GetByIdAsync_SuccessfulScenario_ReturnsEntity()
-    {
-        // A
-        var id = 123;
-
-        var patientClient = PatientClientBuilder.NewObject().DomainBuild();
-        _patientClientRepositoryMock.Setup(p => p.GetByIdAsync(It.IsAny<int>(), It.Is<bool>(b => b == true)))
-            .ReturnsAsync(patientClient);
-
-        var patientClientResponse = PatientClientBuilder.NewObject().ResponseBuild();
-        _patientClientMapperMock.Setup(p => p.DomainToResponse(It.IsAny<PatientClient>()))
-            .Returns(patientClientResponse);
-
-        // A
-        var patientClientResponseResult = await _patientClientService.GetByIdAsync(id);
-
-        // A
-        _patientClientMapperMock.Verify(p => p.DomainToResponse(It.IsAny<PatientClient>()), Times.Once());
-
-        Assert.NotNull(patientClientResponseResult);
-    }
-
-    [Fact]
-    public async Task GetByIdAsync_EntityDoesNotExist_ReturnsNull()
-    {
-        // A
-        var id = 123;
-
-        _patientClientRepositoryMock.Setup(p => p.GetByIdAsync(It.IsAny<int>(), It.Is<bool>(b => b == true)))
-            .Returns(Task.FromResult<PatientClient?>(null));
-
-        // A
-        var patientClientResponseResult = await _patientClientService.GetByIdAsync(id);
-
-        // A
-        _patientClientMapperMock.Verify(p => p.DomainToResponse(It.IsAny<PatientClient>()), Times.Never());
-
-        Assert.Null(patientClientResponseResult);
     }
 }

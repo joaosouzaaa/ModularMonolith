@@ -1,10 +1,9 @@
 ﻿using FluentValidation;
-using ModularMonolith.Common.Interfaces;
+using ModularMonolith.Common.Extensions;
 using ModularMonolith.Common.Interfaces.Settings;
 using Patient.Domain.DataTransferObjects.PatientClient;
 using Patient.Domain.Entities;
 using Patient.Domain.Enums;
-using Patient.Domain.Extensions;
 using Patient.Domain.Interfaces.Mappers;
 using Patient.Domain.Interfaces.Repositories;
 using Patient.Domain.Interfaces.Services;
@@ -12,27 +11,39 @@ using Patient.Domain.Interfaces.Services;
 namespace Patient.ApplicationServices.Services;
 
 public sealed class PatientClientService(
-    IPatientClientRepository patientClientRepository, 
+    IPatientClientRepository patientClientRepository,
     IPatientClientMapper patientClientMapper,
-    INotificationHandler notificationHandler, 
-    IValidator<PatientClient> validator) 
+    INotificationHandler notificationHandler,
+    IValidator<PatientClient> validator)
     : IPatientClientService
 {
-    public async Task<bool> AddAsync(PatientClientSave patientClientSave)
+    public async Task<bool> AddAsync(PatientClientSave patientClientSave, CancellationToken cancellationToken)
     {
         var patientClient = patientClientMapper.SaveToDomain(patientClientSave);
 
-        if (!await ValidateAsync(patientClient))
+        if (!await IsValidAsync(patientClient, cancellationToken))
         {
             return false;
         }
 
-        return await patientClientRepository.AddAsync(patientClient);
+        return await patientClientRepository.AddAsync(patientClient, cancellationToken);
     }
 
-    public async Task<bool> UpdateAsync(PatientClientUpdate patientClientUpdate)
+    public async Task<PatientClientResponse?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
-        var patientClient = await patientClientRepository.GetByIdAsync(patientClientUpdate.Id, false);
+        var patientClient = await patientClientRepository.GetByIdAsync(id, true, cancellationToken);
+
+        if (patientClient is null)
+        {
+            return null;
+        }
+
+        return patientClientMapper.DomainToResponse(patientClient);
+    }
+
+    public async Task<bool> UpdateAsync(PatientClientUpdate patientClientUpdate, CancellationToken cancellationToken)
+    {
+        var patientClient = await patientClientRepository.GetByIdAsync(patientClientUpdate.Id, false, cancellationToken);
 
         if (patientClient is null)
         {
@@ -43,36 +54,24 @@ public sealed class PatientClientService(
 
         patientClientMapper.UpdateToDomain(patientClientUpdate, patientClient);
 
-        if (!await ValidateAsync(patientClient))
+        if (!await IsValidAsync(patientClient, cancellationToken))
         {
             return false;
         }
 
-        return await patientClientRepository.UpdateAsync(patientClient);
+        return await patientClientRepository.UpdateAsync(patientClient, cancellationToken);
     }
 
-    public async Task<PatientClientResponse?> GetByIdAsync(int id)
+    private async Task<bool> IsValidAsync(PatientClient patientClient, CancellationToken cancellationToken)
     {
-        var patientClient = await patientClientRepository.GetByIdAsync(id, true);
-
-        if (patientClient is null)
-        {
-            return null;
-        }
-
-        return patientClientMapper.DomainToResponse(patientClient);
-    }
-
-    private async Task<bool> ValidateAsync(PatientClient patientClient)
-    {
-        var validationResult = await validator.ValidateAsync(patientClient);
+        var validationResult = await validator.ValidateAsync(patientClient, cancellationToken);
 
         if (validationResult.IsValid)
         {
             return true;
         }
 
-        foreach(var error in validationResult.Errors)
+        foreach (var error in validationResult.Errors)
         {
             notificationHandler.AddNotification(error.PropertyName, error.ErrorMessage);
         }

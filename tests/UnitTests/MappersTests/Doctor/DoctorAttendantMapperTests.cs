@@ -23,13 +23,13 @@ public sealed class DoctorAttendantMapperTests
         _scheduleMapperMock = new Mock<IScheduleMapper>();
         _specialityMapperMock = new Mock<ISpecialityMapper>();
         _doctorAttendantMapper = new DoctorAttendantMapper(
-            _certificationMapperMock.Object, 
-            _scheduleMapperMock.Object, 
+            _certificationMapperMock.Object,
+            _scheduleMapperMock.Object,
             _specialityMapperMock.Object);
     }
 
     [Fact]
-    public void DomainPageListToResponsePageList_SuccessfulScenario()
+    public void DomainPageListToResponsePageList_SuccessfulScenario_ReturnsResponsePageList()
     {
         // A
         var scheduleList = new List<Schedule>()
@@ -81,7 +81,7 @@ public sealed class DoctorAttendantMapperTests
         {
             SpecialityBuilder.NewObject().ResponseBuild()
         };
-        _specialityMapperMock.SetupSequence(s => s.DomainLisToResponseList(It.IsAny<List<Speciality>>()))
+        _specialityMapperMock.SetupSequence(s => s.DomainListToResponseList(It.IsAny<List<Speciality>>()))
             .Returns(specialityResponseList)
             .Returns(specialityResponseList);
 
@@ -97,7 +97,7 @@ public sealed class DoctorAttendantMapperTests
     }
 
     [Fact]
-    public void DomainToResponse_SuccessfulScenario()
+    public void DomainToResponse_SuccessfulScenario_ReturnsResponseObject()
     {
         // A
         var scheduleList = new List<Schedule>()
@@ -133,7 +133,7 @@ public sealed class DoctorAttendantMapperTests
         {
             SpecialityBuilder.NewObject().ResponseBuild()
         };
-        _specialityMapperMock.Setup(s => s.DomainLisToResponseList(It.IsAny<List<Speciality>>()))
+        _specialityMapperMock.Setup(s => s.DomainListToResponseList(It.IsAny<List<Speciality>>()))
             .Returns(specialityResponseList);
 
         // A
@@ -150,7 +150,7 @@ public sealed class DoctorAttendantMapperTests
     }
 
     [Fact]
-    public void FilterRequestToArgumentDomain_SuccessfulScenario()
+    public void FilterRequestToArgumentDomain_SuccessfulScenario_ReturnsDomainObject()
     {
         // A
         var specialityIdList = new List<int>()
@@ -175,7 +175,7 @@ public sealed class DoctorAttendantMapperTests
     }
 
     [Fact]
-    public void SaveToDomain_SuccessfulScenario()
+    public void SaveToDomain_SuccessfulScenario_ReturnsDomainObject()
     {
         // A
         var doctorAttendantSave = DoctorAttendantBuilder.NewObject().SaveBuild();
@@ -195,14 +195,14 @@ public sealed class DoctorAttendantMapperTests
     }
 
     [Fact]
-    public void UpdateToDomain_SuccessfulScenario()
+    public void UpdateToDomain_SuccessfulScenario_ReturnsDomainObject()
     {
         // A
         var doctorAttendantUpdate = DoctorAttendantBuilder.NewObject().UpdateBuild();
         var doctorAttendantResult = DoctorAttendantBuilder.NewObject().DomainBuild();
 
         _certificationMapperMock.Setup(c => c.RequestToDomainUpdate(
-            It.IsAny<CertificationRequest>(), 
+            It.IsAny<CertificationRequest>(),
             It.IsAny<Certification>()));
 
         // A

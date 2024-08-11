@@ -11,21 +11,21 @@ using ModularMonolith.Common.Interfaces.Settings;
 
 namespace Doctor.ApplicationService.Services;
 
-public sealed class SpecialityService 
-    : BaseService<Speciality>, 
-    ISpecialityService, 
+public sealed class SpecialityService
+    : BaseService<Speciality>,
+    ISpecialityService,
     ISpecialityServiceFacade
 {
     private readonly ISpecialityRepository _specialityRepository;
     private readonly ISpecialityMapper _specialityMapper;
 
     public SpecialityService(
-        ISpecialityRepository specialityRepository, 
+        ISpecialityRepository specialityRepository,
         ISpecialityMapper specialityMapper,
-        INotificationHandler notificationHandler, 
+        INotificationHandler notificationHandler,
         IValidator<Speciality> validator)
         : base(
-            notificationHandler, 
+            notificationHandler,
             validator)
     {
         _specialityRepository = specialityRepository;

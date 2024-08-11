@@ -3,7 +3,7 @@ using Appointment.Domain.Enums;
 using FluentValidation;
 using ModularMonolith.Common.Extensions;
 
-namespace Appointment.Domain.Validators;
+namespace Appointment.ApplicationService.Validators;
 
 public sealed class AppointmentTimeValidator : AbstractValidator<AppointmentTime>
 {

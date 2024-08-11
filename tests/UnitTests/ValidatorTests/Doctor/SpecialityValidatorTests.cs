@@ -1,4 +1,4 @@
-﻿using Doctor.Domain.Validators;
+﻿using Doctor.ApplicationService.Validators;
 using UnitTests.TestBuilders.Doctor;
 
 namespace UnitTests.ValidatorTests.Doctor;

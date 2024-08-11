@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
-using MimeKit;
-using MimeKit.Text;
+﻿using Microsoft.Extensions.Options;
+using ModularMonolith.Common.Options;
+using Patient.Domain.Arguments;
 using Patient.Domain.Contracts;
 using Patient.Domain.Interfaces.EmailSettings;
 using Patient.Domain.Interfaces.Repositories;
@@ -9,26 +9,19 @@ using Patient.Domain.Interfaces.Services;
 namespace Patient.ApplicationServices.Services;
 
 public sealed class EmailService(
-    IPatientClientRepositoryFacade patientClientRepository, 
+    IPatientClientRepositoryFacade patientClientRepository,
     IEmailSender emailSender,
-    IConfiguration configuration) 
+    IOptions<EmailCredentialsOptions> emailCredentialsOptions)
     : IEmailService
 {
-    public async Task SendAppointmentEmailAsync(AppointmentTimeCreatedEvent appointmentTimeCreatedEvent)
-    {
-        var to = await patientClientRepository.GetEmailByIdAsync(appointmentTimeCreatedEvent.PatientClientId);
+    private readonly EmailCredentialsOptions _emailCredentials = emailCredentialsOptions.Value;
 
-        var mailMessage = new MimeMessage()
-        {
-            Subject = "Your appointment is booked!",
-            To = { MailboxAddress.Parse(to) },
-            Body = new TextPart(TextFormat.Text)
-            {
-                Text = $"Your appointment is booked to {appointmentTimeCreatedEvent.Time.ToString("dd/MM/yyyy HH:mm")}"
-            },
-            From = { MailboxAddress.Parse(configuration["EmailCredentials:From"]) }
-        };
-
-        await emailSender.SendEmailAsync(mailMessage);
-    }
+    public async Task SendAppointmentEmailAsync(AppointmentTimeCreatedEvent appointmentTimeCreatedEvent, CancellationToken cancellationToken) =>
+        await emailSender.SendEmailAsync(
+            new SendEmailArgument(
+                "Your appointment is booked!",
+                (await patientClientRepository.GetEmailByIdAsync(appointmentTimeCreatedEvent.PatientClientId, cancellationToken))!,
+                $"Your appointment is booked to {appointmentTimeCreatedEvent.Time.ToString("dd/MM/yyyy HH:mm")}",
+                _emailCredentials.From),
+            cancellationToken);
 }

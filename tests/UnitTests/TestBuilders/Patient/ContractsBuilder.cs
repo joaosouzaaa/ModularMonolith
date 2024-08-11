@@ -1,6 +1,7 @@
 ﻿using Patient.Domain.Contracts;
 
 namespace UnitTests.TestBuilders.Patient;
+
 public sealed class ContractsBuilder
 {
     public static ContractsBuilder NewObject() =>

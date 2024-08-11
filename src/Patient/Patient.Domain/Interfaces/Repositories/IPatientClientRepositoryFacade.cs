@@ -2,5 +2,5 @@
 
 public interface IPatientClientRepositoryFacade
 {
-    Task<string?> GetEmailByIdAsync(int id);
+    Task<string?> GetEmailByIdAsync(int id, CancellationToken cancellationToken);
 }

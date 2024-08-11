@@ -7,8 +7,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\Common\ModularMonolith.Common\ModularMonolith.Common.csproj" />
-	  <ProjectReference Include="..\Appointment.Domain\Appointment.Domain.csproj" />
+		<PackageReference Include="FluentValidation" Version="11.9.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Common\ModularMonolith.Common\ModularMonolith.Common.csproj" />
+		<ProjectReference Include="..\Appointment.Domain\Appointment.Domain.csproj" />
 	</ItemGroup>
 
 </Project>

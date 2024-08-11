@@ -13,7 +13,7 @@ public sealed class CertificationMapperTests
     }
 
     [Fact]
-    public void DomainToResponse_SuccessfulScenario()
+    public void DomainToResponse_SuccessfulScenario_ReturnsResponseObject()
     {
         // A
         var certification = CertificationBuilder.NewObject().DomainBuild();
@@ -27,7 +27,7 @@ public sealed class CertificationMapperTests
     }
 
     [Fact]
-    public void RequestToDomainCreate_SuccessfulScenario()
+    public void RequestToDomainCreate_SuccessfulScenario_ReturnsDomainObject()
     {
         // A
         var certificationRequest = CertificationBuilder.NewObject().RequestBuild();
@@ -40,7 +40,7 @@ public sealed class CertificationMapperTests
     }
 
     [Fact]
-    public void RequestToDomainUpdate_SuccessfulScenario()
+    public void RequestToDomainUpdate_SuccessfulScenario_AssignPropertiesSuccessfully()
     {
         // A
         var certificationRequest = CertificationBuilder.NewObject().RequestBuild();

@@ -3,6 +3,7 @@ using Patient.Domain.DataTransferObjects.PatientClient;
 using Patient.Domain.Entities;
 
 namespace UnitTests.TestBuilders.Patient;
+
 public sealed class PatientClientBuilder
 {
     private readonly int _id = 123;
@@ -35,13 +36,10 @@ public sealed class PatientClientBuilder
             _contactInfoRequest);
 
     public PatientClientResponse ResponseBuild() =>
-        new()
-        {
-            Address = _address,
-            ContactInfo = ContactInfoBuilder.NewObject().ResponseBuild(),
-            Id = _id,
-            Name = _name
-        };
+        new(_id,
+            _name,
+            _address,
+            ContactInfoBuilder.NewObject().ResponseBuild());
 
     public PatientClientBuilder WithName(string name)
     {
