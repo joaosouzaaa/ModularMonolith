@@ -23,7 +23,8 @@ public sealed class DoctorAttendantRepository(DoctorDbContext dbContext) : BaseR
             .Include(d => d.Certification)
             .Include(d => d.Specialities)
             .Include(d => d.Schedules)
-            .Where(d => d.Specialities.Any(s => filter.SpecialityIds.Contains(s.Id)))
+            .Where(d => !filter.SpecialityIds.Any() ||
+            d.Specialities.Any(s => filter.SpecialityIds.Contains(s.Id)))
             .Where(d => filter.InitialTime == null ||
             d.Schedules.Any(s => s.Time >= filter.InitialTime))
             .Where(d => filter.FinalTime == null ||

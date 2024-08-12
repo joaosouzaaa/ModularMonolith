@@ -24,7 +24,7 @@ services:
     image: ${DOCKER_REGISTRY-}modularmonolithapi
     build:
       context: .
-      dockerfile: ModularMonolith.API/Dockerfile
+      dockerfile: src/API/ModularMonolith.API/Dockerfile
     environment:
       - DOCKER_ENVIROMENT=DockerDevelopment
     depends_on:

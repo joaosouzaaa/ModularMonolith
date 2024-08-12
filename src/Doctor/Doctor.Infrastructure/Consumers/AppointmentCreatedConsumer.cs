@@ -13,20 +13,20 @@ using System.Text.Json;
 namespace Doctor.Infrastructure.Consumers;
 
 public sealed class AppointmentCreatedConsumer(
-    IOptions<RabbitMQCredentialsOptions> rabbitMQOptions,
+    IOptions<RabbitMQCredentialsOptions> rabbitMQCredentialsOptions,
     IServiceScopeFactory scopeFactory)
     : BackgroundService
 {
-    private readonly RabbitMQCredentialsOptions _rabbitMQCredentialsOptions = rabbitMQOptions.Value;
+    private readonly RabbitMQCredentialsOptions _rabbitMQCredentials = rabbitMQCredentialsOptions.Value;
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
         var factory = new ConnectionFactory()
         {
-            HostName = _rabbitMQCredentialsOptions.HostName,
-            Port = _rabbitMQCredentialsOptions.Port,
-            UserName = _rabbitMQCredentialsOptions.UserName,
-            Password = _rabbitMQCredentialsOptions.Password
+            HostName = _rabbitMQCredentials.HostName,
+            Port = _rabbitMQCredentials.Port,
+            UserName = _rabbitMQCredentials.UserName,
+            Password = _rabbitMQCredentials.Password
         };
 
         var connection = factory.CreateConnection();

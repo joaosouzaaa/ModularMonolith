@@ -6,7 +6,7 @@ namespace UnitTests.TestBuilders.Doctor;
 public sealed class CertificationBuilder
 {
     private readonly int _id = 123;
-    private string _licenseNumber = new string('a', count: 20);
+    private string _licenseNumber = new('a', 20);
 
     public static CertificationBuilder NewObject() =>
         new();

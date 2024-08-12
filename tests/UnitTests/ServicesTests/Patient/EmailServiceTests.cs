@@ -20,14 +20,13 @@ public sealed class EmailServiceTests
     {
         _patientClientRepositoryFacadeMock = new Mock<IPatientClientRepositoryFacade>();
         _emailSenderMock = new Mock<IEmailSender>();
-        _emailCredentialsOptions = Options.Create(
-            new EmailCredentialsOptions()
-            {
-                From = "test",
-                Host = "test",
-                Password = "rando",
-                Port = 123
-            });
+        _emailCredentialsOptions = Options.Create(new EmailCredentialsOptions()
+        {
+            From = "test",
+            Host = "test",
+            Password = "rando",
+            Port = 123
+        });
         _emailService = new EmailService(
             _patientClientRepositoryFacadeMock.Object,
             _emailSenderMock.Object,

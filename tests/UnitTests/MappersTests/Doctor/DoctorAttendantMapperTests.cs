@@ -195,7 +195,7 @@ public sealed class DoctorAttendantMapperTests
     }
 
     [Fact]
-    public void UpdateToDomain_SuccessfulScenario_ReturnsDomainObject()
+    public void UpdateToDomain_SuccessfulScenario_AssignPropertiesSuccessfully()
     {
         // A
         var doctorAttendantUpdate = DoctorAttendantBuilder.NewObject().UpdateBuild();
