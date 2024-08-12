@@ -22,9 +22,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Appointment\Appointment.DependencyInjection\Appointment.DependencyInjection.csproj" />
-		<ProjectReference Include="..\..\Doctor\Doctor.DependencyInjection\Doctor.DependencyInjection.csproj" />
-		<ProjectReference Include="..\..\Patient\Patient.DependencyInjection\Patient.DependencyInjection.csproj" />
+		<ProjectReference Include="..\..\Modules\Appointment\Appointment.DependencyInjection\Appointment.DependencyInjection.csproj" />
+		<ProjectReference Include="..\..\Modules\Doctor\Doctor.DependencyInjection\Doctor.DependencyInjection.csproj" />
+		<ProjectReference Include="..\..\Modules\Patient\Patient.DependencyInjection\Patient.DependencyInjection.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -17,7 +17,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Common\ModularMonolith.Common\ModularMonolith.Common.csproj" />
+		<ProjectReference Include="..\..\..\Common\ModularMonolith.Common\ModularMonolith.Common.csproj" />
 		<ProjectReference Include="..\Appointment.Domain\Appointment.Domain.csproj" />
 	</ItemGroup>
 

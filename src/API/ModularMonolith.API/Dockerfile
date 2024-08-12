@@ -8,19 +8,19 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["src/API/ModularMonolith.API/ModularMonolith.API.csproj", "src/API/ModularMonolith.API/"]
-COPY ["src/Appointment/Appointment.DependencyInjection/Appointment.DependencyInjection.csproj", "src/Appointment/Appointment.DependencyInjection/"]
-COPY ["src/Appointment/Appointment.ApplicationService/Appointment.ApplicationService.csproj", "src/Appointment/Appointment.ApplicationService/"]
+COPY ["src/Modules/Appointment/Appointment.DependencyInjection/Appointment.DependencyInjection.csproj", "src/Modules/Appointment/Appointment.DependencyInjection/"]
+COPY ["src/Modules/Appointment/Appointment.ApplicationService/Appointment.ApplicationService.csproj", "src/Modules/Appointment/Appointment.ApplicationService/"]
 COPY ["src/Common/ModularMonolith.Common/ModularMonolith.Common.csproj", "src/Common/ModularMonolith.Common/"]
-COPY ["src/Appointment/Appointment.Domain/Appointment.Domain.csproj", "src/Appointment/Appointment.Domain/"]
-COPY ["src/Appointment/Appointment.Infrastructure/Appointment.Infrastructure.csproj", "src/Appointment/Appointment.Infrastructure/"]
-COPY ["src/Doctor/Doctor.DependencyInjection/Doctor.DependencyInjection.csproj", "src/Doctor/Doctor.DependencyInjection/"]
-COPY ["src/Doctor/Doctor.ApplicationService/Doctor.ApplicationService.csproj", "src/Doctor/Doctor.ApplicationService/"]
-COPY ["src/Doctor/Doctor.Domain/Doctor.Domain.csproj", "src/Doctor/Doctor.Domain/"]
-COPY ["src/Doctor/Doctor.Infrastructure/Doctor.Infrastructure.csproj", "src/Doctor/Doctor.Infrastructure/"]
-COPY ["src/Patient/Patient.DependencyInjection/Patient.DependencyInjection.csproj", "src/Patient/Patient.DependencyInjection/"]
-COPY ["src/Patient/Patient.ApplicationServices/Patient.ApplicationServices.csproj", "src/Patient/Patient.ApplicationServices/"]
-COPY ["src/Patient/Patient.Domain/Patient.Domain.csproj", "src/Patient/Patient.Domain/"]
-COPY ["src/Patient/Patient.Infrastructure/Patient.Infrastructure.csproj", "src/Patient/Patient.Infrastructure/"]
+COPY ["src/Modules/Appointment/Appointment.Domain/Appointment.Domain.csproj", "src/Modules/Appointment/Appointment.Domain/"]
+COPY ["src/Modules/Appointment/Appointment.Infrastructure/Appointment.Infrastructure.csproj", "src/Modules/Appointment/Appointment.Infrastructure/"]
+COPY ["src/Modules/Doctor/Doctor.DependencyInjection/Doctor.DependencyInjection.csproj", "src/Modules/Doctor/Doctor.DependencyInjection/"]
+COPY ["src/Modules/Doctor/Doctor.ApplicationService/Doctor.ApplicationService.csproj", "src/Modules/Doctor/Doctor.ApplicationService/"]
+COPY ["src/Modules/Doctor/Doctor.Domain/Doctor.Domain.csproj", "src/Modules/Doctor/Doctor.Domain/"]
+COPY ["src/Modules/Doctor/Doctor.Infrastructure/Doctor.Infrastructure.csproj", "src/Modules/Doctor/Doctor.Infrastructure/"]
+COPY ["src/Modules/Patient/Patient.DependencyInjection/Patient.DependencyInjection.csproj", "src/Modules/Patient/Patient.DependencyInjection/"]
+COPY ["src/Modules/Patient/Patient.ApplicationServices/Patient.ApplicationServices.csproj", "src/Modules/Patient/Patient.ApplicationServices/"]
+COPY ["src/Modules/Patient/Patient.Domain/Patient.Domain.csproj", "src/Modules/Patient/Patient.Domain/"]
+COPY ["src/Modules/Patient/Patient.Infrastructure/Patient.Infrastructure.csproj", "src/Modules/Patient/Patient.Infrastructure/"]
 RUN dotnet restore "./src/API/ModularMonolith.API/ModularMonolith.API.csproj"
 COPY . .
 WORKDIR "/src/src/API/ModularMonolith.API"
