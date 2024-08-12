@@ -12,8 +12,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Appointment.ApplicationService\Appointment.ApplicationService.csproj" />
-	  <ProjectReference Include="..\Appointment.Infrastructure\Appointment.Infrastructure.csproj" />
+		<ProjectReference Include="..\Appointment.ApplicationService\Appointment.ApplicationService.csproj" />
+		<ProjectReference Include="..\Appointment.Infrastructure\Appointment.Infrastructure.csproj" />
 	</ItemGroup>
 
 </Project>
