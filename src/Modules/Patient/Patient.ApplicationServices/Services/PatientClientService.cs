@@ -29,6 +29,13 @@ public sealed class PatientClientService(
         return await patientClientRepository.AddAsync(patientClient, cancellationToken);
     }
 
+    public async Task<List<PatientClientResponse>> GetAllAsync(CancellationToken cancellationToken)
+    {
+        var patientClientList = await patientClientRepository.GetAllAsync(cancellationToken);
+
+        return patientClientMapper.DomainListToResponseList(patientClientList);
+    }
+
     public async Task<PatientClientResponse?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
         var patientClient = await patientClientRepository.GetByIdAsync(id, true, cancellationToken);

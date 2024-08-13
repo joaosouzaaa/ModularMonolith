@@ -6,6 +6,9 @@ namespace Patient.ApplicationServices.Mappers;
 
 public sealed class PatientClientMapper(IContactInfoMapper contactInfoMapper) : IPatientClientMapper
 {
+    public List<PatientClientResponse> DomainListToResponseList(List<PatientClient> patientClientList) =>
+        patientClientList.Select(DomainToResponse).ToList();
+
     public PatientClientResponse DomainToResponse(PatientClient patientClient) =>
         new(patientClient.Id,
             patientClient.Name,

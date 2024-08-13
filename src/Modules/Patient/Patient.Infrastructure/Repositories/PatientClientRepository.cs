@@ -20,6 +20,9 @@ public sealed class PatientClientRepository(
         return await SaveChangesAsync(cancellationToken);
     }
 
+    public Task<List<PatientClient>> GetAllAsync(CancellationToken cancellationToken) =>
+        DbContextSet.AsNoTracking().Include(p => p.ContactInfo).ToListAsync(cancellationToken);
+
     public Task<PatientClient?> GetByIdAsync(int id, bool asNoTracking, CancellationToken cancellationToken)
     {
         var query = (IQueryable<PatientClient>)DbContextSet;
