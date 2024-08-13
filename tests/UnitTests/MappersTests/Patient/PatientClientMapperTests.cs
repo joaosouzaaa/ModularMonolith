@@ -18,6 +18,30 @@ public sealed class PatientClientMapperTests
     }
 
     [Fact]
+    public void DomainListToResponseList_SuccessfulScenario_ReturnsResponseList()
+    {
+        // A
+        var patientClientList = new List<PatientClient>()
+        {
+            PatientClientBuilder.NewObject().DomainBuild(),
+            PatientClientBuilder.NewObject().DomainBuild(),
+            PatientClientBuilder.NewObject().DomainBuild()
+        };
+
+        var contactInfoResponse = ContactInfoBuilder.NewObject().ResponseBuild();
+        _contactInfoMapperMock.SetupSequence(c => c.DomainToResponse(It.IsAny<ContactInfo>()))
+            .Returns(contactInfoResponse)
+            .Returns(contactInfoResponse)
+            .Returns(contactInfoResponse);
+
+        // A
+        var patientClientResponseListResult = _patientClientMapper.DomainListToResponseList(patientClientList);
+
+        // A
+        Assert.Equal(patientClientResponseListResult.Count, patientClientList.Count);
+    }
+
+    [Fact]
     public void DomainToResponse_SuccessfulScenario_ReturnsResponseObject()
     {
         // A

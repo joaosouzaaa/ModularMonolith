@@ -23,6 +23,12 @@ public sealed class PatientClientController(IPatientClientService patientClientS
     public Task<bool> UpdateAsync([FromBody] PatientClientUpdate patientClientUpdate, CancellationToken cancellationToken) =>
         patientClientService.UpdateAsync(patientClientUpdate, cancellationToken);
 
+    [HttpGet("get-all")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<PatientClientResponse>))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public Task<List<PatientClientResponse>> GetAllAsync(CancellationToken cancellationToken) =>
+        patientClientService.GetAllAsync(cancellationToken);
+
     [HttpGet("get-by-id")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PatientClientResponse))]
     [ProducesResponseType(StatusCodes.Status204NoContent)]

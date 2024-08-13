@@ -100,6 +100,36 @@ public sealed class PatientClientServiceTests
     }
 
     [Fact]
+    public async Task GetAllAsync_SuccessfulScenario_ReturnsResponseList()
+    {
+        // A
+        var patientClientList = new List<PatientClient>()
+        {
+            PatientClientBuilder.NewObject().DomainBuild(),
+            PatientClientBuilder.NewObject().DomainBuild(),
+            PatientClientBuilder.NewObject().DomainBuild()
+        };
+        _patientClientRepositoryMock.Setup(p => p.GetAllAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(patientClientList);
+
+        var patientClientResponseList = new List<PatientClientResponse>()
+        {
+            PatientClientBuilder.NewObject().ResponseBuild(),
+            PatientClientBuilder.NewObject().ResponseBuild(),
+            PatientClientBuilder.NewObject().ResponseBuild(),
+            PatientClientBuilder.NewObject().ResponseBuild()
+        };
+        _patientClientMapperMock.Setup(p => p.DomainListToResponseList(It.IsAny<List<PatientClient>>()))
+            .Returns(patientClientResponseList);
+
+        // A
+        var patientClientResponseListResult = await _patientClientService.GetAllAsync(default);
+
+        // A
+        Assert.Equal(patientClientResponseListResult.Count, patientClientResponseList.Count);
+    }
+
+    [Fact]
     public async Task GetByIdAsync_SuccessfulScenario_ReturnsEntity()
     {
         // A
